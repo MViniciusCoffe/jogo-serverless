@@ -174,7 +174,7 @@ const CrosswordGame = () => {
                 } else {
                   newDir = 'across';
                   newRow = existing.row + i;
-                  newCol = newCol = existing.col - j;
+                  newCol = existing.col - j;
                 }
 
                 if (canPlaceWord(letterGrid, word, newRow, newCol, newDir, size)) {
@@ -236,7 +236,6 @@ const CrosswordGame = () => {
     });
     
     for (let word of balancedWords) {
-      word.number = number;
       const key = `${word.row}-${word.col}`;
       
       if (!cellNumbers[key]) {
@@ -244,6 +243,7 @@ const CrosswordGame = () => {
           number: number, 
           arrows: [word.direction === 'across' ? '→' : '▼'] 
         };
+        word.number = number;
         number++;
       } else {
         word.number = cellNumbers[key].number;
@@ -369,7 +369,7 @@ const CrosswordGame = () => {
   };
 
   const handleInputChange = (row, col, value) => {
-    if (grid[row][col].isNumberCell || !grid[row][col].letter) return;
+    if (!grid[row][col].letter) return;
     
     if (value.length > 1) value = value.slice(-1);
     const newGrid = [...userGrid];
@@ -382,15 +382,9 @@ const CrosswordGame = () => {
       
       if (wordDir === 'across') {
         nextCol = col + 1;
-        while (nextCol < startCol + word.length && grid[nextRow] && grid[nextRow][nextCol] && grid[nextRow][nextCol].isNumberCell) {
-          nextCol++;
-        }
         if (nextCol >= startCol + word.length) return;
       } else {
         nextRow = row + 1;
-        while (nextRow < startRow + word.length && grid[nextRow] && grid[nextRow][nextCol] && grid[nextRow][nextCol].isNumberCell) {
-          nextRow++;
-        }
         if (nextRow >= startRow + word.length) return;
       }
       
@@ -406,23 +400,14 @@ const CrosswordGame = () => {
       
       if (wordDir === 'across') {
         prevCol = col - 1;
-        while (prevCol >= startCol && grid[prevRow] && grid[prevRow][prevCol] && grid[prevRow][prevCol].isNumberCell) {
-          prevCol--;
-        }
-        if (prevCol >= startCol) {
-          const prevKey = `${prevRow}-${prevCol}`;
-          if (inputRefs.current[prevKey]) inputRefs.current[prevKey].focus();
-        }
+        if (prevCol < startCol) return;
       } else {
         prevRow = row - 1;
-        while (prevRow >= startRow && grid[prevRow] && grid[prevRow][prevCol] && grid[prevRow][prevCol].isNumberCell) {
-          prevRow--;
-        }
-        if (prevRow >= startRow) {
-          const prevKey = `${prevRow}-${prevCol}`;
-          if (inputRefs.current[prevKey]) inputRefs.current[prevKey].focus();
-        }
+        if (prevRow < startRow) return;
       }
+      
+      const prevKey = `${prevRow}-${prevCol}`;
+      if (inputRefs.current[prevKey]) inputRefs.current[prevKey].focus();
     }
   };
 
@@ -430,7 +415,7 @@ const CrosswordGame = () => {
     let correct = true;
     for (let r = 0; r < gridSize; r++) {
       for (let c = 0; c < gridSize; c++) {
-        if (grid[r][c].letter && !grid[r][c].isNumberCell && userGrid[r][c] !== grid[r][c].letter) {
+        if (grid[r][c].letter && userGrid[r][c] !== grid[r][c].letter) {
           correct = false;
           break;
         }
@@ -471,10 +456,10 @@ const CrosswordGame = () => {
 
   return (
     <div className={`min-h-screen p-4 ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-purple-50 to-blue-100'}`}>
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-full mx-auto">
         <div className="flex justify-between items-center mb-2">
           <h1 className={`text-4xl font-bold ${darkMode ? 'text-purple-400' : 'text-purple-900'}`}>Palavras Cruzadas em Português</h1>
-          <button onClick={() => setDarkMode(!darkMode)} className={`px-4 py-2 rounded-lg font-semibold transition ${darkMode ? 'bg-gray-700 text-yellow-400 hover:bg-gray-600' : 'bg-gray-800 text-white hover:bg-gray-700'}`}>
+          <button onClick={() => setDarkMode(!darkMode)} className={`px-4 py-2 rounded-lg font-semibold transition ${darkMode ? 'bg-gray-700 text-black-200 hover:bg-gray-600' : 'bg-gray-800 text-black hover:bg-gray-700'}`}>
             {darkMode ? '☀️ Claro' : '🌙 Escuro'}
           </button>
         </div>
@@ -482,56 +467,50 @@ const CrosswordGame = () => {
           Grade {gridSize}x{gridSize} • {acrossClues.length} horizontais • {downClues.length} verticais
         </p>
         
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-3">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="lg:col-span-1">
             <div className={`rounded-lg shadow-lg p-4 overflow-auto ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
               <div className={`inline-block border-2 ${darkMode ? 'border-gray-600' : 'border-gray-800'}`}>
                 {grid.map((row, rowIndex) => (
                   <div key={rowIndex} className="flex">
                     {row.map((cell, colIndex) => {
                       const key = `${rowIndex}-${colIndex}`;
-                      const isSelected = selectedCell.row === rowIndex && selectedCell.col === colIndex && !cell.isNumberCell && cell.letter;
-                      const isHighlighted = selectedClue && !cell.isNumberCell && cell.letter && (
+                      const isSelected = selectedCell.row === rowIndex && selectedCell.col === colIndex && cell.letter;
+                      const isHighlighted = selectedClue && cell.letter && (
                         (selectedClue.direction === 'across' && selectedClue.row === rowIndex && colIndex >= selectedClue.col && colIndex < selectedClue.col + selectedClue.word.length) ||
                         (selectedClue.direction === 'down' && selectedClue.col === colIndex && rowIndex >= selectedClue.row && rowIndex < selectedClue.row + selectedClue.word.length)
                       );
 
                       // Célula preta (sem letra)
                       if (!cell.letter) {
-                        return <div key={key} className={`w-8 h-8 border ${darkMode ? 'bg-gray-900 border-gray-600' : 'bg-black border-gray-400'}`} />;
+                        return <div key={key} className={`w-10 h-10 border ${darkMode ? 'bg-gray-900 border-gray-600' : 'bg-black border-gray-400'}`} />;
                       }
 
                       return (
                         <div 
                           key={key} 
-                          className={`w-8 h-8 border relative text-xs ${darkMode ? 'border-gray-600' : 'border-gray-400'} ${
-                            cell.isNumberCell 
-                              ? darkMode ? 'bg-gray-800' : 'bg-gray-100'
-                              : isSelected 
-                                ? darkMode ? 'bg-yellow-600' : 'bg-yellow-300' 
-                                : isHighlighted 
-                                  ? darkMode ? 'bg-blue-900' : 'bg-blue-200' 
-                                  : darkMode ? 'bg-gray-700' : 'bg-white'
+                          className={`w-10 h-10 border relative text-xs ${darkMode ? 'border-gray-600' : 'border-gray-400'} ${
+                            isSelected 
+                              ? darkMode ? 'bg-yellow-600' : 'bg-yellow-300' 
+                              : isHighlighted 
+                                ? darkMode ? 'bg-blue-900' : 'bg-blue-200' 
+                                : darkMode ? 'bg-gray-700' : 'bg-white'
                           }`} 
                           onClick={() => handleCellClick(rowIndex, colIndex)}
                         >
                           {cell.number && (
-                            <div 
-                              className={`absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center text-sm font-bold cursor-pointer ${darkMode ? 'text-purple-400' : 'text-purple-700'}`}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleCellClick(rowIndex, colIndex);
-                              }}
+                            <span 
+                              className={`absolute top-0 left-0 text-[0.6rem] leading-none font-bold pointer-events-none ${darkMode ? 'text-purple-400' : 'text-purple-700'}`}
                             >
                               {cell.number}
-                            </div>
+                            </span>
                           )}
                           {cell.arrows && cell.arrows.length > 0 && (
-                            <span className={`absolute top-0 right-0.5 text-xs leading-none pointer-events-none font-bold ${darkMode ? 'text-purple-400' : 'text-purple-600'}`}>
+                            <span className={`absolute top-0 right-0.5 text-[0.6rem] leading-none pointer-events-none font-bold ${darkMode ? 'text-purple-400' : 'text-purple-600'}`}>
                               {cell.arrows.join('')}
                             </span>
                           )}
-                          {!cell.isNumberCell && (
+                          {cell.letter && (
                             <input 
                               ref={el => inputRefs.current[key] = el} 
                               type="text" 
@@ -539,8 +518,7 @@ const CrosswordGame = () => {
                               value={userGrid[rowIndex][colIndex]} 
                               onChange={(e) => handleInputChange(rowIndex, colIndex, e.target.value)} 
                               onKeyDown={(e) => handleKeyDown(e, rowIndex, colIndex)} 
-                              className={`w-full h-full text-center text-sm font-bold uppercase bg-transparent outline-none cursor-pointer ${darkMode ? 'text-white' : 'text-gray-900'}`} 
-                              style={{ caretColor: 'transparent' }} 
+                              className={`w-full h-full text-center text-sm font-bold uppercase bg-transparent outline-none cursor-text ${darkMode ? 'text-white' : 'text-gray-900'}`} 
                             />
                           )}
                         </div>
@@ -551,9 +529,9 @@ const CrosswordGame = () => {
               </div>
 
               <div className="mt-4 flex gap-3 flex-wrap">
-                <button onClick={checkSolution} className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm font-semibold">Verificar Solução</button>
-                <button onClick={resetGame} className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition text-sm font-semibold">Limpar</button>
-                <button onClick={newGame} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-semibold">Novo Jogo</button>
+                <button onClick={checkSolution} className="px-4 py-2 bg-purple-600 text-black rounded-lg hover:bg-purple-700 transition text-sm font-semibold">Verificar Solução</button>
+                <button onClick={resetGame} className="px-4 py-2 bg-gray-600 text-black rounded-lg hover:bg-gray-700 transition text-sm font-semibold">Limpar</button>
+                <button onClick={newGame} className="px-4 py-2 bg-blue-600 text-black rounded-lg hover:bg-blue-700 transition text-sm font-semibold">Novo Jogo</button>
               </div>
 
               {isComplete && (
@@ -572,7 +550,7 @@ const CrosswordGame = () => {
                 <h3 className={`text-base font-semibold mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Horizontais ({acrossClues.length})</h3>
                 <ul className="space-y-1">
                   {acrossClues.map(clue => (
-                    <li key={`across-${clue.number}`} onClick={() => { setSelectedClue(clue); setSelectedCell({ row: clue.row, col: clue.col }); setDirection('across'); }} className={`cursor-pointer p-1.5 rounded transition text-sm ${selectedClue?.number === clue.number && selectedClue?.direction === 'across' ? darkMode ? 'bg-gray-600 text-white font-semibold' : 'bg-gray-700 text-white font-semibold' : darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100'}`}>
+                    <li key={`across-${clue.number}`} onClick={() => { setSelectedClue(clue); setSelectedCell({ row: clue.row, col: clue.col }); setDirection('across'); }} className={`cursor-pointer p-1.5 rounded transition text-sm ${selectedClue?.number === clue.number && selectedClue?.direction === 'across' ? (darkMode ? 'bg-gray-600 text-black' : 'bg-gray-200 text-gray-900') + ' font-semibold' : darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'}`}>
                       <span className="font-bold">{clue.number}.</span> {clue.clue}
                     </li>
                   ))}
@@ -583,7 +561,7 @@ const CrosswordGame = () => {
                 <h3 className={`text-base font-semibold mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Verticais ({downClues.length})</h3>
                 <ul className="space-y-1">
                   {downClues.map(clue => (
-                    <li key={`down-${clue.number}`} onClick={() => { setSelectedClue(clue); setSelectedCell({ row: clue.row, col: clue.col }); setDirection('down'); }} className={`cursor-pointer p-1.5 rounded transition text-sm ${selectedClue?.number === clue.number && selectedClue?.direction === 'down' ? darkMode ? 'bg-gray-600 text-white font-semibold' : 'bg-gray-700 text-white font-semibold' : darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100'}`}>
+                    <li key={`down-${clue.number}`} onClick={() => { setSelectedClue(clue); setSelectedCell({ row: clue.row, col: clue.col }); setDirection('down'); }} className={`cursor-pointer p-1.5 rounded transition text-sm ${selectedClue?.number === clue.number && selectedClue?.direction === 'down' ? (darkMode ? 'bg-gray-600 text-black' : 'bg-gray-200 text-gray-900') + ' font-semibold' : darkMode ? 'hover:bg-gray-700 text-gray-300' : 'hover:bg-gray-100 text-gray-700'}`}>
                       <span className="font-bold">{clue.number}.</span> {clue.clue}
                     </li>
                   ))}
