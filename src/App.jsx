@@ -479,8 +479,8 @@ const CrosswordGame = () => {
   const downClues = words.filter(w => w.direction === 'down').sort((a, b) => a.number - b.number);
 
   return (
-    <div className={`min-h-screen p-4 ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-purple-50 to-blue-100'}`}>
-      <div className="max-w-7xl mx-auto">
+    <div className={`p-4 ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-purple-50 to-blue-100'}`}>
+      <div className="">
         <div className="flex justify-between items-center mb-2">
           <h1 className={`text-4xl font-bold ${darkMode ? 'text-yellow-400' : 'text-yellow-900'}`}>Palavras Cruzadas em Português</h1>
           <button onClick={() => setDarkMode(!darkMode)} className={`px-4 py-2 rounded-lg font-semibold transition ${darkMode ? 'bg-gray-700 text-black hover:bg-gray-600' : 'bg-gray-800 text-black hover:bg-gray-700'}`}>
