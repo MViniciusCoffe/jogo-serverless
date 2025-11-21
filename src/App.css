@@ -11,7 +11,8 @@
   --bg-card: #ffffff;
   --arena-bg: #e5e7eb;
   --player-color: #2563eb;
-  --target-color: #dc2626;
+  --enemy-color: #dc2626;
+  --knife-color: #8b5cf6;
   --overlay-bg: rgba(255, 255, 255, 0.8);
 }
 
@@ -23,13 +24,15 @@
   --arena-bg: #0f172a;
   --arena-border: #374151;
   --player-color: #3b82f6;
-  --target-color: #ef4444;
+  --enemy-color: #ef4444;
+  --knife-color: #a78bfa;
   --overlay-bg: rgba(0, 0, 0, 0.7);
 }
 
 /* Container Principal */
 .app-container {
   min-height: 100vh;
+  min-width: 100vw;
   padding: 1rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: var(--bg-main);
@@ -69,6 +72,15 @@
   gap: 1rem;
 }
 
+.health-display {
+  font-size: 1.25rem;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  background: var(--enemy-color);
+  color: white;
+  border-radius: 0.5rem;
+}
+
 .score-display {
   font-size: 1.25rem;
   font-weight: bold;
@@ -104,30 +116,51 @@
   cursor: crosshair;
 }
 
-/* Entidades (Player & Target) */
+/* Entidades */
 .entity {
   position: absolute;
   top: 0;
   left: 0;
-  border-radius: 4px;
   will-change: transform;
 }
 
 .player {
   background-color: var(--player-color);
   box-shadow: 0 0 10px var(--player-color);
+  border-radius: 4px;
   z-index: 10;
 }
 
-.target {
-  background-color: var(--target-color);
-  box-shadow: 0 0 15px var(--target-color);
+.enemy {
+  background-color: var(--enemy-color);
+  box-shadow: 0 0 15px var(--enemy-color);
   border-radius: 50%;
   z-index: 5;
-  transition: opacity 0.3s;
+  animation: pulse 1s ease-in-out infinite;
 }
 
-/* Overlay (Menu Inicial) */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.knife {
+  background: linear-gradient(to bottom, 
+    var(--knife-color) 0%, 
+    var(--knife-color) 70%, 
+    #64748b 70%, 
+    #64748b 100%
+  );
+  box-shadow: 0 0 8px var(--knife-color);
+  border-radius: 2px;
+  z-index: 15;
+  transition: opacity 0.3s;
+  transform-origin: center center;
+  margin-left: -4px;
+  margin-top: -12.5px;
+}
+
+/* Overlay */
 .overlay {
   position: absolute;
   inset: 0;
@@ -148,12 +181,23 @@
   border: 1px solid var(--text-main);
 }
 
+.overlay-content.game-over {
+  border: 3px solid var(--enemy-color);
+}
+
 .overlay-content h2 {
   margin-top: 0;
 }
 
 .overlay-content p {
   margin: 0.5rem 0;
+}
+
+.final-score {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--enemy-color);
+  margin: 1rem 0 !important;
 }
 
 /* Botões */

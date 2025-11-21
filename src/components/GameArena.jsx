@@ -3,10 +3,13 @@ import React from 'react';
 export const GameArena = ({ 
   containerRef, 
   playerRef, 
-  targetRef, 
+  knifeRef,
+  enemiesRef,
   gameActive, 
   playerSize, 
-  targetSize 
+  knifeWidth,
+  knifeHeight,
+  enemies
 }) => {
   return (
     <div className="game-arena-container" ref={containerRef}>
@@ -17,16 +20,34 @@ export const GameArena = ({
         style={{ width: playerSize, height: playerSize }}
       />
       
-      {/* Alvo */}
+      {/* Faca Giratória */}
       <div 
-        ref={targetRef} 
-        className="entity target"
+        ref={knifeRef} 
+        className="entity knife"
         style={{ 
-          width: targetSize, 
-          height: targetSize,
+          width: knifeWidth, 
+          height: knifeHeight,
           opacity: gameActive ? 1 : 0 
         }}
       />
+      
+      {/* Inimigos */}
+      {gameActive && enemies.map((enemy, index) => (
+        <div
+          key={enemy.id}
+          ref={el => {
+            if (enemiesRef.current) {
+              enemiesRef.current[index] = el;
+            }
+          }}
+          className="entity enemy"
+          style={{
+            width: enemy.size,
+            height: enemy.size,
+            transform: `translate(${enemy.x}px, ${enemy.y}px)`
+          }}
+        />
+      ))}
     </div>
   );
 };
