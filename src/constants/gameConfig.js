@@ -4,7 +4,7 @@ export const GAME_CONFIG = {
     SPEED: 5,
     INITIAL_X: 50,
     INITIAL_Y: 50,
-    MAX_HEALTH: 5,
+    MAX_HEALTH: 100000000000000,
   },
   ENEMY: {
     SIZE: 20,

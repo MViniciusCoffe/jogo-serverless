@@ -44,23 +44,22 @@ const App = () => {
     container: { width: 0, height: 0 }
   });
 
-  // Callback de Game Over
-  const handleGameOver = useCallback(() => {
-    setGameActive(false);
-    setIsGameOver(true);
-    stopLoop();
-  }, []);
-
   // Custom Hooks
-  const { startLoop, stopLoop } = useGameLoop(
+  const { startLoop, stopLoop } = useGameLoop(  
     gameState, 
     playerRef, 
     knifeRef,
     enemiesRef,
     setScore,
     setHealth,
-    handleGameOver
+    setEnemies,
+    () => {
+      setGameActive(false);
+      setIsGameOver(true);
+      stopLoop();
+    }
   );
+  
   useKeyboardControls(gameState);
   useContainerSize(containerRef, gameState);
 

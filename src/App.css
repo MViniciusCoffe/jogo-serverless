@@ -133,15 +133,21 @@
 
 .enemy {
   background-color: var(--enemy-color);
-  box-shadow: 0 0 15px var(--enemy-color);
   border-radius: 50%;
   z-index: 5;
-  animation: pulse 1s ease-in-out infinite;
+  animation: glow-pulse 1.5s infinite alternate; 
 }
 
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+/* Nova animação que NÃO mexe no transform */
+@keyframes glow-pulse {
+  from {
+    box-shadow: 0 0 10px var(--enemy-color);
+    opacity: 0.9;
+  }
+  to {
+    box-shadow: 0 0 25px var(--enemy-color), 0 0 10px var(--enemy-color) inset;
+    opacity: 1;
+  }
 }
 
 .knife {
