@@ -3,10 +3,10 @@ import { GAME_CONFIG } from './constants/gameConfig';
 import { useGameLoop } from './hooks/useGameLoop';
 import { useKeyboardControls } from './hooks/useKeyboardControls';
 import { useContainerSize } from './hooks/useContainerSize';
-import { GameHeader } from './components/GameHeader';
+import { usePauseKey } from './hooks/usePauseKey';
+import { GameHUD } from './components/GameHUD';
 import { GameArena } from './components/GameArena';
 import { GameOverlay } from './components/GameOverlay';
-import { GameFooter } from './components/GameFooter';
 import './App.css';
 
 const App = () => {
@@ -23,6 +23,7 @@ const App = () => {
   const knifeRef = useRef(null);
   const enemiesRef = useRef([]);
   const containerRef = useRef(null);
+  const loopStartedRef = useRef(false);
 
   // Estado do jogo (não causa re-render)
   const gameState = useRef({
@@ -44,6 +45,28 @@ const App = () => {
     container: { width: 0, height: 0 }
   });
 
+  // Handlers
+  const startGame = useCallback(() => {
+    setScore(0);
+    setHealth(GAME_CONFIG.PLAYER.MAX_HEALTH);
+    setIsGameOver(false);
+    gameState.current.player.x = GAME_CONFIG.PLAYER.INITIAL_X;
+    gameState.current.player.y = GAME_CONFIG.PLAYER.INITIAL_Y;
+    gameState.current.knife.angle = 0;
+    gameState.current.enemies = [];
+    setEnemies([]);
+    setGameActive(true);
+  }, []);
+
+  const stopGame = useCallback(() => {
+    setGameActive(false);
+    loopStartedRef.current = false;
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setDarkMode(!darkMode);
+  }, []);
+
   // Custom Hooks
   const { startLoop, stopLoop } = useGameLoop(  
     gameState, 
@@ -56,12 +79,12 @@ const App = () => {
     () => {
       setGameActive(false);
       setIsGameOver(true);
-      stopLoop();
     }
   );
   
   useKeyboardControls(gameState);
   useContainerSize(containerRef, gameState);
+  usePauseKey(gameActive, stopGame);
 
   // Sincronizar enemies com o estado do React para renderização
   React.useEffect(() => {
@@ -74,65 +97,49 @@ const App = () => {
     }
   }, [gameActive]);
 
-  // Handlers
-  const startGame = () => {
-    setScore(0);
-    setHealth(GAME_CONFIG.PLAYER.MAX_HEALTH);
-    setIsGameOver(false);
-    gameState.current.player.x = GAME_CONFIG.PLAYER.INITIAL_X;
-    gameState.current.player.y = GAME_CONFIG.PLAYER.INITIAL_Y;
-    gameState.current.knife.angle = 0;
-    gameState.current.enemies = [];
-    setEnemies([]);
-    setGameActive(true);
-    startLoop();
-  };
-
-  const stopGame = () => {
-    setGameActive(false);
-    stopLoop();
-  };
-
-  const toggleTheme = () => {
-    setDarkMode(!darkMode);
-  };
+  // Iniciar loop do jogo quando gameActive muda para true
+  React.useEffect(() => {
+    if (gameActive && !loopStartedRef.current) {
+      loopStartedRef.current = true;
+      startLoop();
+    } else if (!gameActive) {
+      loopStartedRef.current = false;
+      stopLoop();
+    }
+  }, [gameActive, startLoop, stopLoop]);
 
   return (
     <div className={`app-container ${darkMode ? 'dark' : 'light'}`}>
-      <div className="game-wrapper">
+      <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
+        <GameArena
+          containerRef={containerRef}
+          playerRef={playerRef}
+          knifeRef={knifeRef}
+          enemiesRef={enemiesRef}
+          gameActive={gameActive}
+          playerSize={GAME_CONFIG.PLAYER.SIZE}
+          knifeWidth={GAME_CONFIG.KNIFE.WIDTH}
+          knifeHeight={GAME_CONFIG.KNIFE.HEIGHT}
+          enemies={enemies}
+        />
         
-        <GameHeader 
+        {(!gameActive || isGameOver) && (
+          <GameOverlay 
+            onStart={startGame} 
+            isGameOver={isGameOver}
+            score={score}
+          />
+        )}
+
+        <GameHUD
           score={score}
           health={health}
           maxHealth={GAME_CONFIG.PLAYER.MAX_HEALTH}
-          darkMode={darkMode} 
-          onToggleTheme={toggleTheme} 
+          darkMode={darkMode}
+          onToggleTheme={toggleTheme}
+          gameActive={gameActive}
+          onPause={stopGame}
         />
-
-        <div style={{ position: 'relative' }}>
-          <GameArena
-            containerRef={containerRef}
-            playerRef={playerRef}
-            knifeRef={knifeRef}
-            enemiesRef={enemiesRef}
-            gameActive={gameActive}
-            playerSize={GAME_CONFIG.PLAYER.SIZE}
-            knifeWidth={GAME_CONFIG.KNIFE.WIDTH}
-            knifeHeight={GAME_CONFIG.KNIFE.HEIGHT}
-            enemies={enemies}
-          />
-          
-          {(!gameActive || isGameOver) && (
-            <GameOverlay 
-              onStart={startGame} 
-              isGameOver={isGameOver}
-              score={score}
-            />
-          )}
-        </div>
-
-        <GameFooter gameActive={gameActive} onStop={stopGame} />
-
       </div>
     </div>
   );
