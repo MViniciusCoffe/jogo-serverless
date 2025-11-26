@@ -8,9 +8,7 @@ export const GameFooter = ({ gameActive, onStop }) => {
           Pausar Jogo
         </button>
       )}
-      <p className="hint">
-        Dica: O movimento diagonal é normalizado para velocidade constante.
-      </p>
+      <p className="hint">Dica: O movimento diagonal é normalizado para velocidade constante.</p>
     </div>
   );
 };

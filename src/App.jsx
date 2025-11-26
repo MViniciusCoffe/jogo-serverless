@@ -27,22 +27,22 @@ const App = () => {
 
   // Estado do jogo (não causa re-render)
   const gameState = useRef({
-    player: { 
-      x: GAME_CONFIG.PLAYER.INITIAL_X, 
-      y: GAME_CONFIG.PLAYER.INITIAL_Y, 
-      size: GAME_CONFIG.PLAYER.SIZE, 
-      speed: GAME_CONFIG.PLAYER.SPEED 
+    player: {
+      x: GAME_CONFIG.PLAYER.INITIAL_X,
+      y: GAME_CONFIG.PLAYER.INITIAL_Y,
+      size: GAME_CONFIG.PLAYER.SIZE,
+      speed: GAME_CONFIG.PLAYER.SPEED,
     },
     knife: {
       x: 0,
       y: 0,
       angle: 0,
       width: GAME_CONFIG.KNIFE.WIDTH,
-      height: GAME_CONFIG.KNIFE.HEIGHT
+      height: GAME_CONFIG.KNIFE.HEIGHT,
     },
     enemies: [],
     keys: { ...GAME_CONFIG.KEYS },
-    container: { width: 0, height: 0 }
+    container: { width: 0, height: 0 },
   });
 
   // Handlers
@@ -68,9 +68,9 @@ const App = () => {
   }, []);
 
   // Custom Hooks
-  const { startLoop, stopLoop } = useGameLoop(  
-    gameState, 
-    playerRef, 
+  const { startLoop, stopLoop } = useGameLoop(
+    gameState,
+    playerRef,
     knifeRef,
     enemiesRef,
     setScore,
@@ -81,7 +81,7 @@ const App = () => {
       setIsGameOver(true);
     }
   );
-  
+
   useKeyboardControls(gameState);
   useContainerSize(containerRef, gameState);
   usePauseKey(gameActive, stopGame);
@@ -122,13 +122,9 @@ const App = () => {
           knifeHeight={GAME_CONFIG.KNIFE.HEIGHT}
           enemies={enemies}
         />
-        
+
         {(!gameActive || isGameOver) && (
-          <GameOverlay 
-            onStart={startGame} 
-            isGameOver={isGameOver}
-            score={score}
-          />
+          <GameOverlay onStart={startGame} isGameOver={isGameOver} score={score} />
         )}
 
         <GameHUD

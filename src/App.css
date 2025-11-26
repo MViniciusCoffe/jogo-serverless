@@ -133,7 +133,7 @@
   background-color: var(--enemy-color);
   border-radius: 50%;
   z-index: 5;
-  animation: glow-pulse 1.5s infinite alternate; 
+  animation: glow-pulse 1.5s infinite alternate;
 }
 
 /* Nova animação que NÃO mexe no transform */
@@ -143,16 +143,19 @@
     opacity: 0.9;
   }
   to {
-    box-shadow: 0 0 25px var(--enemy-color), 0 0 10px var(--enemy-color) inset;
+    box-shadow:
+      0 0 25px var(--enemy-color),
+      0 0 10px var(--enemy-color) inset;
     opacity: 1;
   }
 }
 
 .knife {
-  background: linear-gradient(to bottom, 
-    var(--knife-color) 0%, 
-    var(--knife-color) 70%, 
-    #64748b 70%, 
+  background: linear-gradient(
+    to bottom,
+    var(--knife-color) 0%,
+    var(--knife-color) 70%,
+    #64748b 70%,
     #64748b 100%
   );
   box-shadow: 0 0 8px var(--knife-color);
@@ -235,4 +238,3 @@
   color: var(--text-main);
   border: 1px solid var(--text-main);
 }
-

@@ -11,7 +11,7 @@ export const useContainerSize = (containerRef, gameState) => {
 
     // Configuração inicial
     handleResize();
-    
+
     window.addEventListener('resize', handleResize);
 
     return () => {
