@@ -15,7 +15,6 @@ const App = () => {
   const [health, setHealth] = useState(GAME_CONFIG.PLAYER.MAX_HEALTH);
   const [gameActive, setGameActive] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
-  const [darkMode, setDarkMode] = useState(true);
   const [enemies, setEnemies] = useState([]);
 
   // Refs para manipulação DOM
@@ -63,10 +62,6 @@ const App = () => {
     loopStartedRef.current = false;
   }, []);
 
-  const toggleTheme = useCallback(() => {
-    setDarkMode(!darkMode);
-  }, []);
-
   // Custom Hooks
   const { startLoop, stopLoop } = useGameLoop(
     gameState,
@@ -109,7 +104,7 @@ const App = () => {
   }, [gameActive, startLoop, stopLoop]);
 
   return (
-    <div className={`app-container ${darkMode ? 'dark' : 'light'}`}>
+    <div className="app-container dark">
       <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
         <GameArena
           containerRef={containerRef}
@@ -131,8 +126,6 @@ const App = () => {
           score={score}
           health={health}
           maxHealth={GAME_CONFIG.PLAYER.MAX_HEALTH}
-          darkMode={darkMode}
-          onToggleTheme={toggleTheme}
           gameActive={gameActive}
           onPause={stopGame}
         />

@@ -4,18 +4,6 @@
   user-select: none;
 }
 
-/* Tema Claro */
-.app-container.light {
-  --bg-main: #f0f2f5;
-  --text-main: #111827;
-  --bg-card: #ffffff;
-  --arena-bg: #e5e7eb;
-  --player-color: #2563eb;
-  --enemy-color: #dc2626;
-  --knife-color: #8b5cf6;
-  --overlay-bg: rgba(255, 255, 255, 0.8);
-}
-
 /* Tema Escuro */
 .app-container.dark {
   --bg-main: #111827;
@@ -88,16 +76,6 @@
 
 .hud-button:hover {
   opacity: 0.85;
-}
-
-.hud-button.theme-toggle {
-  background: none;
-  color: var(--text-main);
-  border: 1px solid var(--text-main);
-}
-
-.hud-button.theme-toggle:hover {
-  opacity: 0.8;
 }
 
 /* Arena do Jogo */

@@ -1,14 +1,6 @@
 import React from 'react';
 
-export const GameHUD = ({
-  score,
-  health,
-  maxHealth,
-  darkMode,
-  onToggleTheme,
-  gameActive,
-  onPause,
-}) => {
+export const GameHUD = ({ score, health, maxHealth, gameActive, onPause }) => {
   return (
     <div className="game-hud">
       <div className="hud-content">
@@ -22,9 +14,6 @@ export const GameHUD = ({
           <span className="hud-label">⭐</span>
           <span>{score}</span>
         </div>
-        <button onClick={onToggleTheme} className="hud-button theme-toggle">
-          {darkMode ? '☀️' : '🌙'}
-        </button>
         {gameActive && (
           <button onClick={onPause} className="hud-button">
             ⏸️ P
