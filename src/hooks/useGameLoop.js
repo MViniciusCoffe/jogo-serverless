@@ -9,6 +9,7 @@ export const useGameLoop = (
   enemiesRef,
   setScore,
   setHealth,
+  setMoney,
   setEnemies,
   onGameOver
 ) => {
@@ -136,6 +137,16 @@ export const useGameLoop = (
           if (enemy.health <= 0) {
             enemiesToRemove.push(index);
             setScore((s) => s + 10);
+
+            // 10% de chance de dropar dinheiro
+            if (Math.random() < GAME_CONFIG.MONEY.DROP_CHANCE) {
+              gameState.current.moneyDrops.push({
+                id: Date.now() + Math.random(),
+                x: enemyCenterX,
+                y: enemyCenterY,
+                value: GAME_CONFIG.MONEY.VALUE,
+              });
+            }
           }
         }
       });
@@ -147,6 +158,30 @@ export const useGameLoop = (
         });
         // 3. IMPORTANTE: Avisa o React que inimigos morreram
         setEnemies([...enemies]);
+      }
+
+      // --- LÓGICA DE DINHEIRO ---
+      const { moneyDrops } = gameState.current;
+      const playerCenterX2 = player.x + player.size / 2;
+      const playerCenterY2 = player.y + player.size / 2;
+
+      const moneyToRemove = [];
+      moneyDrops.forEach((money, index) => {
+        // Coleta automática dentro do raio
+        const moneyDx = playerCenterX2 - money.x;
+        const moneyDy = playerCenterY2 - money.y;
+        const moneyDist = Math.sqrt(moneyDx * moneyDx + moneyDy * moneyDy);
+
+        if (moneyDist < GAME_CONFIG.MONEY.COLLECTION_RADIUS) {
+          setMoney((m) => m + money.value);
+          moneyToRemove.push(index);
+        }
+      });
+
+      if (moneyToRemove.length > 0) {
+        moneyToRemove.reverse().forEach((index) => {
+          moneyDrops.splice(index, 1);
+        });
       }
 
       // --- RENDERIZAÇÃO DIRETA (Sem esperar o React) ---
@@ -175,6 +210,7 @@ export const useGameLoop = (
       enemiesRef,
       setScore,
       setHealth,
+      setMoney,
       setEnemies,
       spawnEnemy,
       onGameOver,

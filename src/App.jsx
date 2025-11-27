@@ -13,15 +13,18 @@ const App = () => {
   // Estados do React
   const [score, setScore] = useState(0);
   const [health, setHealth] = useState(GAME_CONFIG.PLAYER.MAX_HEALTH);
+  const [money, setMoney] = useState(0);
   const [gameActive, setGameActive] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [enemies, setEnemies] = useState([]);
+  const [moneyDrops, setMoneyDrops] = useState([]);
 
   // Refs para manipulação DOM
   const playerRef = useRef(null);
   const knifeRef = useRef(null);
   const enemiesRef = useRef([]);
+  const moneyRef = useRef([]);
   const containerRef = useRef(null);
   const loopStartedRef = useRef(false);
 
@@ -41,6 +44,7 @@ const App = () => {
       height: GAME_CONFIG.KNIFE.HEIGHT,
     },
     enemies: [],
+    moneyDrops: [],
     keys: { ...GAME_CONFIG.KEYS },
     container: { width: 0, height: 0 },
   });
@@ -49,6 +53,7 @@ const App = () => {
   const startGame = useCallback(() => {
     setScore(0);
     setHealth(GAME_CONFIG.PLAYER.MAX_HEALTH);
+    setMoney(0);
     setIsGameOver(false);
     setIsPaused(false);
 
@@ -69,6 +74,7 @@ const App = () => {
 
     gameState.current.knife.angle = 0;
     gameState.current.enemies = [];
+    gameState.current.moneyDrops = [];
     setEnemies([]);
     setGameActive(true);
   }, []);
@@ -92,6 +98,7 @@ const App = () => {
     enemiesRef,
     setScore,
     setHealth,
+    setMoney,
     setEnemies,
     () => {
       setGameActive(false);
@@ -108,6 +115,7 @@ const App = () => {
     if (gameActive) {
       const interval = setInterval(() => {
         setEnemies([...gameState.current.enemies]);
+        setMoneyDrops([...gameState.current.moneyDrops]);
       }, 16); // ~60 FPS
 
       return () => clearInterval(interval);
@@ -140,11 +148,13 @@ const App = () => {
           playerRef={playerRef}
           knifeRef={knifeRef}
           enemiesRef={enemiesRef}
+          moneyRef={moneyRef}
           gameActive={gameActive}
           playerSize={GAME_CONFIG.PLAYER.SIZE}
           knifeWidth={GAME_CONFIG.KNIFE.WIDTH}
           knifeHeight={GAME_CONFIG.KNIFE.HEIGHT}
           enemies={enemies}
+          moneyDrops={moneyDrops}
         />
 
         {!gameActive && !isPaused && !isGameOver && (
@@ -170,6 +180,7 @@ const App = () => {
         <GameHUD
           score={score}
           health={health}
+          money={money}
           maxHealth={GAME_CONFIG.PLAYER.MAX_HEALTH}
           gameActive={gameActive && !isPaused}
           onPause={pauseGame}

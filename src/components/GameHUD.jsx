@@ -1,8 +1,13 @@
 import React from 'react';
 
-export const GameHUD = ({ score, health, maxHealth, gameActive, onPause }) => {
+export const GameHUD = ({ score, health, maxHealth, money, gameActive, onPause }) => {
   return (
     <div className="game-hud">
+      <div className="hud-bar money-bar">
+        <div className="hud-label">💰 MOEDAS</div>
+        <div className="hud-value">{money}</div>
+      </div>
+
       <div className="hud-bar health-bar">
         <div className="hud-label">🛡️ INTEGRIDADE</div>
         <div className="hud-fill">

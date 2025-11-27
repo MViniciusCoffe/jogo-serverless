@@ -22,6 +22,12 @@ export const GAME_CONFIG = {
     ROTATION_SPEED: 0.05,
     DAMAGE: 2, // Dano da espada por hit
   },
+  MONEY: {
+    SIZE: 12,
+    VALUE: 5, // Valor de cada moeda
+    DROP_CHANCE: 0.1, // 10% de chance de dropar
+    COLLECTION_RADIUS: 60, // Raio de coleta automática
+  },
   KEYS: {
     w: false,
     a: false,

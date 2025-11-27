@@ -5,11 +5,13 @@ export const GameArena = ({
   playerRef,
   knifeRef,
   enemiesRef,
+  moneyRef,
   gameActive,
   playerSize,
   knifeWidth,
   knifeHeight,
   enemies,
+  moneyDrops,
 }) => {
   return (
     <div className="game-arena-container" ref={containerRef}>
@@ -53,6 +55,28 @@ export const GameArena = ({
               // Deixe o useGameLoop definir o transform.
               // Se quiser uma posição inicial para não piscar no canto (0,0), use:
               transform: `translate(${enemy.x}px, ${enemy.y}px)`,
+            }}
+          />
+        ))}
+
+      {/* Moedas */}
+      {gameActive &&
+        moneyDrops.map((money, index) => (
+          <div
+            key={money.id}
+            ref={(el) => {
+              if (moneyRef.current) {
+                moneyRef.current[index] = el;
+              }
+            }}
+            className="entity money"
+            style={{
+              width: 12,
+              height: 12,
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              transform: `translate(${money.x}px, ${money.y}px)`,
             }}
           />
         ))}
