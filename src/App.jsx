@@ -14,6 +14,7 @@ const App = () => {
   const [score, setScore] = useState(0);
   const [health, setHealth] = useState(GAME_CONFIG.PLAYER.MAX_HEALTH);
   const [gameActive, setGameActive] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [enemies, setEnemies] = useState([]);
 
@@ -49,6 +50,7 @@ const App = () => {
     setScore(0);
     setHealth(GAME_CONFIG.PLAYER.MAX_HEALTH);
     setIsGameOver(false);
+    setIsPaused(false);
 
     // Calcular posição do player (centro ou posição fixa)
     if (GAME_CONFIG.PLAYER.INITIAL_X === 'center') {
@@ -71,9 +73,15 @@ const App = () => {
     setGameActive(true);
   }, []);
 
-  const stopGame = useCallback(() => {
+  const pauseGame = useCallback(() => {
     setGameActive(false);
+    setIsPaused(true);
     loopStartedRef.current = false;
+  }, []);
+
+  const resumeGame = useCallback(() => {
+    setGameActive(true);
+    setIsPaused(false);
   }, []);
 
   // Custom Hooks
@@ -93,7 +101,7 @@ const App = () => {
 
   useKeyboardControls(gameState);
   useContainerSize(containerRef, gameState);
-  usePauseKey(gameActive, stopGame);
+  usePauseKey(gameActive && !isPaused, pauseGame);
 
   // Sincronizar enemies com o estado do React para renderização
   React.useEffect(() => {
@@ -132,16 +140,30 @@ const App = () => {
           enemies={enemies}
         />
 
-        {(!gameActive || isGameOver) && (
+        {!gameActive && !isPaused && !isGameOver && (
           <GameOverlay onStart={startGame} isGameOver={isGameOver} score={score} />
+        )}
+
+        {isPaused && !isGameOver && (
+          <div className="pause-overlay">
+            <div className="pause-content">
+              <h2>⏸️ PAUSED</h2>
+              <button onClick={resumeGame} className="btn btn-resume">
+                CONTINUAR
+              </button>
+              <button onClick={startGame} className="btn btn-restart">
+                REINICIAR
+              </button>
+            </div>
+          </div>
         )}
 
         <GameHUD
           score={score}
           health={health}
           maxHealth={GAME_CONFIG.PLAYER.MAX_HEALTH}
-          gameActive={gameActive}
-          onPause={stopGame}
+          gameActive={gameActive && !isPaused}
+          onPause={pauseGame}
         />
       </div>
     </div>
