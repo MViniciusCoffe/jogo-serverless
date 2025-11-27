@@ -1,52 +1,135 @@
-# Jogo Serverless
+# 🛡️ CyberDefense - Jogo Educativo de CyberSecurity
 
-> 🎮 Projeto desenvolvido durante o **SEPE (Semana de Ensino, Pesquisa e Extensão)** — dias **22/10 a 23/10**.
+> 🎮 Um jogo educativo interativo para aprender conceitos fundamentais de **CyberSecurity** enquanto se diverte!
 
-Um jogo **serverless**, criado com **React + Vite** e alimentado por uma **arquitetura AWS totalmente sem servidor**.
+Um jogo desenvolvido com **React + Vite** que transforma o aprendizado de segurança cibernética em uma experiência gamificada e envolvente.
 
-O objetivo do projeto é mostrar como é possível desenvolver um **jogo completo e conectado**, com **persistência em nuvem**, **API escalável** e **infraestrutura simplificada**, sem precisar manter nenhum servidor manualmente.
+O objetivo do projeto é ensinar conceitos essenciais de CyberSecurity através de **mecânicas de jogo intuitivas**, mantendo o engajamento do jogador enquanto aprende sobre ameaças e defesas.
 
 ---
 
 ## 🕹️ Sobre o Jogo
 
-O jogador enfrenta ondas crescentes de inimigos, coleta pontos de experiência e desbloqueia novas habilidades.  
-O desafio é **sobreviver o máximo de tempo possível**, evoluindo o personagem a cada rodada.
+Você é um **Especialista em Segurança Cibernética** defendendo sua rede contra **ataques e ameaças digitais**. O objetivo é **identificar e neutralizar ameaças**, acumulando **conhecimento (pontos)** e **mantendo a integridade do sistema (vida)** pelo máximo de tempo possível.
 
-### ✨ Funcionalidades principais:
+### ✨ Temática e Mecânicas:
 
-- 🧙 Sistema de XP e níveis
-- 💥 Habilidades automáticas e progressivas
-- 👾 Enxames de inimigos com dificuldade crescente
-- 💾 Salvamento de progresso na nuvem (_via DynamoDB_)
-- 🌐 Comunicação serverless com AWS Amplify e API Gateway
-- 🖥️ Interface leve, responsiva e moderna feita com React + Vite
+- **👤 Você (Player)**: Um especialista em segurança no centro da rede
+- **🔪 Escudo (Knife)**: Sua principal defesa - representa firewalls e proteções ativas
+- **🔴 Ameaças (Enemies)**:
+  - **Malware** - Programas maliciosos que atacam o sistema
+  - **Ransomware** - Bloqueia dados e reduz a vida do sistema
+  - **Phishing** - Tenta comprometer credenciais
+  - **DDoS** - Sobrecarrega e enfraquece a rede
+- **❤️ Integridade do Sistema (Health)**: Quanto mais ataques sofrer, menor fica
+- **⭐ Conhecimento Adquirido (Score)**: Pontos ganhos ao neutralizar ameaças
+
+### 🎯 Objetivos Educacionais:
+
+- Reconhecer diferentes tipos de ataques cibernéticos
+- Entender como defesas funcionam contra ameaças
+- Aprender que segurança é um processo contínuo
+- Compreender a importância de estar sempre alerta
+- Praticar resposta rápida a incidentes de segurança
+
+### 🎮 Controles:
+
+- **W, A, S, D ou Setas**: Mover-se pela rede
+- **P ou Botão**: Pausar o jogo
+- **🔪 Escudo (automático)**: Neutraliza ameaças ao seu redor
+- **Objetivo**: Sobreviver o máximo possível contra as ameaças
 
 ---
 
-## ☁️ Arquitetura Serverless
+## ☁️ Tecnologia
 
-O backend do projeto utiliza serviços gerenciados da **AWS**, garantindo escalabilidade, baixo custo e simplicidade de manutenção.
+Este projeto foi desenvolvido com foco em:
 
-### 🧩 Diagrama Simplificado:
+- ⚛️ **React 19** - Framework UI moderno
+- ⚡ **Vite** - Build tool rápido e eficiente
+- 🎨 **CSS3** - Estilização moderna com gradientes e animações
+- 📊 **Game Loop** - Atualização em tempo real (60 FPS)
+- 🎯 **Física de Colisão** - Detecção de intersecção entre elementos
 
+### 🛠️ Ferramentas de Qualidade:
+
+- 🔍 **ESLint** - Linting e análise de código
+- 💅 **Prettier** - Formatação automática de código
+- 📝 **Commitizen** - Commits padronizados com Conventional Commits
+
+---
+
+## 🚀 Como Jogar
+
+### Instalação
+
+```bash
+# Clonar o repositório
+git clone https://github.com/MViniciusCoffe/jogo-serverless.git
+cd jogo-serverless
+
+# Instalar dependências
+npm install
+
+# Iniciar o servidor de desenvolvimento
+npm run dev
 ```
-[ React + Vite (Frontend) ]
-           │
-           ▼
- [ AWS Amplify (Hosting + Auth) ]
-           │
-           ▼
- [ Amazon API Gateway ]
-           │
-           ▼
- [ AWS Lambda Functions ]
-           │
-           ▼
- [ Amazon DynamoDB (Banco NoSQL) ]
+
+O jogo estará disponível em `http://localhost:5173`
+
+### Comandos Úteis
+
+```bash
+# Desenvolvimento
+npm run dev        # Inicia o servidor de desenvolvimento
+npm run build      # Build para produção
+npm run preview    # Preview do build
+
+# Qualidade
+npm run lint       # Verifica erros de código
+npm run format     # Formata o código automaticamente
+
+# Git
+npm run commit     # Criar commit com Commitizen
 ```
 
-### 🔧 Funções do backend:
+---
+
+## 📚 Conceitos de CyberSecurity Abordados
+
+Este jogo apresenta e reforça os seguintes conceitos:
+
+| Conceito                        | Como Aparece no Jogo                                        |
+| ------------------------------- | ----------------------------------------------------------- |
+| **Defesa Proativa**             | Seu escudo neutraliza ameaças antes delas te atingirem      |
+| **Monitoramento Contínuo**      | Você precisa estar sempre alerta para novas ameaças         |
+| **Resposta a Incidentes**       | Reagir rapidamente aos ataques reduz danos                  |
+| **Múltiplas Camadas de Defesa** | Quanto mais tempo sobreviver, mais ameaças surgem           |
+| **Conhecimento é Proteção**     | Cada ameaça neutralizada adiciona ao seu conhecimento       |
+| **Falhas Críticas**             | Deixar ameaças passarem compromete a integridade do sistema |
+
+---
+
+## 🎓 Próximas Ideias para Expansão
+
+- [ ] Diferentes tipos de ataques com nomes reais (SQL Injection, XSS, etc)
+- [ ] Sistema de upgrades de defesa (aprimorar firewalls)
+- [ ] Minigames educativos sobre boas práticas
+- [ ] Leaderboard online
+- [ ] Tutoriais interativos
+- [ ] Badges e achievements
+
+---
+
+## 👨‍💻 Desenvolvimento
+
+Este projeto foi criado como uma forma inovadora de **tornar o aprendizado de CyberSecurity acessível, divertido e interativo**.
+
+Seja bem-vindo à **CyberDefense** - onde a segurança digital encontra a diversão!
+
+---
+
+**Desenvolvido com ❤️ para educação em CyberSecurity**
 
 | Serviço         | Função                                                            |
 | --------------- | ----------------------------------------------------------------- |
