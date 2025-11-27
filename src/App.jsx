@@ -147,12 +147,12 @@ const App = () => {
         {isPaused && !isGameOver && (
           <div className="pause-overlay">
             <div className="pause-content">
-              <h2>⏸️ PAUSED</h2>
+              <h2>⏸️ DEFESA EM PAUSA</h2>
               <button onClick={resumeGame} className="btn btn-resume">
-                CONTINUAR
+                CONTINUAR DEFENDENDO
               </button>
               <button onClick={startGame} className="btn btn-restart">
-                REINICIAR
+                REINICIAR DEFESA
               </button>
             </div>
           </div>
