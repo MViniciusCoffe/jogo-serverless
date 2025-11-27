@@ -114,6 +114,13 @@ const App = () => {
     }
   }, [gameActive]);
 
+  // Parar o loop quando o jogo termina
+  React.useEffect(() => {
+    if (isGameOver) {
+      stopLoop();
+    }
+  }, [isGameOver, stopLoop]);
+
   // Iniciar loop do jogo quando gameActive muda para true
   React.useEffect(() => {
     if (gameActive && !loopStartedRef.current) {
@@ -143,6 +150,8 @@ const App = () => {
         {!gameActive && !isPaused && !isGameOver && (
           <GameOverlay onStart={startGame} isGameOver={isGameOver} score={score} />
         )}
+
+        {isGameOver && <GameOverlay onStart={startGame} isGameOver={isGameOver} score={score} />}
 
         {isPaused && !isGameOver && (
           <div className="pause-overlay">

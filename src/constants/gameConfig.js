@@ -12,12 +12,15 @@ export const GAME_CONFIG = {
     SPAWN_MARGIN: 10,
     SPAWN_INTERVAL: 2000, // Spawn a cada 2 segundos
     MAX_ENEMIES: 30, // Máximo de inimigos na tela
+    HEALTH: 3, // Vida de cada inimigo
+    DAMAGE: 95, // Dano que causa ao jogador
   },
   KNIFE: {
     WIDTH: 8,
     HEIGHT: 25,
     ORBIT_RADIUS: 50,
     ROTATION_SPEED: 0.05,
+    DAMAGE: 2, // Dano da espada por hit
   },
   KEYS: {
     w: false,

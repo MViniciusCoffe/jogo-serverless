@@ -51,6 +51,7 @@ export const useGameLoop = (
       x,
       y,
       size: GAME_CONFIG.ENEMY.SIZE,
+      health: GAME_CONFIG.ENEMY.HEALTH,
     });
 
     // 2. IMPORTANTE: Avisa o React para desenhar o novo inimigo
@@ -106,7 +107,7 @@ export const useGameLoop = (
           enemy.y += (enemyDy / distance) * GAME_CONFIG.ENEMY.SPEED;
         }
 
-        // Colisões
+        // Colisões com o jogador
         if (
           player.x < enemy.x + enemy.size &&
           player.x + player.size > enemy.x &&
@@ -115,12 +116,13 @@ export const useGameLoop = (
         ) {
           enemiesToRemove.push(index);
           setHealth((h) => {
-            const newHealth = h - 1;
+            const newHealth = Math.max(0, h - GAME_CONFIG.ENEMY.DAMAGE);
             if (newHealth <= 0) onGameOver();
             return newHealth;
           });
         }
 
+        // Colisões com a faca
         const knifeRadius = GAME_CONFIG.KNIFE.HEIGHT / 2;
         const enemyCenterX = enemy.x + enemy.size / 2;
         const enemyCenterY = enemy.y + enemy.size / 2;
@@ -129,8 +131,12 @@ export const useGameLoop = (
         const distY = knife.y - enemyCenterY;
 
         if (Math.sqrt(distX * distX + distY * distY) < knifeRadius + enemyRadius) {
-          enemiesToRemove.push(index);
-          setScore((s) => s + 10);
+          enemy.health -= GAME_CONFIG.KNIFE.DAMAGE;
+
+          if (enemy.health <= 0) {
+            enemiesToRemove.push(index);
+            setScore((s) => s + 10);
+          }
         }
       });
 
