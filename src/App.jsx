@@ -27,8 +27,8 @@ const App = () => {
   // Estado do jogo (não causa re-render)
   const gameState = useRef({
     player: {
-      x: GAME_CONFIG.PLAYER.INITIAL_X,
-      y: GAME_CONFIG.PLAYER.INITIAL_Y,
+      x: GAME_CONFIG.PLAYER.INITIAL_X === 'center' ? 0 : GAME_CONFIG.PLAYER.INITIAL_X,
+      y: GAME_CONFIG.PLAYER.INITIAL_Y === 'center' ? 0 : GAME_CONFIG.PLAYER.INITIAL_Y,
       size: GAME_CONFIG.PLAYER.SIZE,
       speed: GAME_CONFIG.PLAYER.SPEED,
     },
@@ -49,8 +49,22 @@ const App = () => {
     setScore(0);
     setHealth(GAME_CONFIG.PLAYER.MAX_HEALTH);
     setIsGameOver(false);
-    gameState.current.player.x = GAME_CONFIG.PLAYER.INITIAL_X;
-    gameState.current.player.y = GAME_CONFIG.PLAYER.INITIAL_Y;
+
+    // Calcular posição do player (centro ou posição fixa)
+    if (GAME_CONFIG.PLAYER.INITIAL_X === 'center') {
+      gameState.current.player.x =
+        gameState.current.container.width / 2 - GAME_CONFIG.PLAYER.SIZE / 2;
+    } else {
+      gameState.current.player.x = GAME_CONFIG.PLAYER.INITIAL_X;
+    }
+
+    if (GAME_CONFIG.PLAYER.INITIAL_Y === 'center') {
+      gameState.current.player.y =
+        gameState.current.container.height / 2 - GAME_CONFIG.PLAYER.SIZE / 2;
+    } else {
+      gameState.current.player.y = GAME_CONFIG.PLAYER.INITIAL_Y;
+    }
+
     gameState.current.knife.angle = 0;
     gameState.current.enemies = [];
     setEnemies([]);

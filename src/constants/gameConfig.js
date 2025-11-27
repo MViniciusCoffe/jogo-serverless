@@ -2,8 +2,8 @@ export const GAME_CONFIG = {
   PLAYER: {
     SIZE: 30,
     SPEED: 5,
-    INITIAL_X: 50,
-    INITIAL_Y: 50,
+    INITIAL_X: 'center',
+    INITIAL_Y: 'center',
     MAX_HEALTH: 100000000000000,
   },
   ENEMY: {
@@ -11,7 +11,7 @@ export const GAME_CONFIG = {
     SPEED: 1.5, // Velocidade que persegue o jogador
     SPAWN_MARGIN: 10,
     SPAWN_INTERVAL: 2000, // Spawn a cada 2 segundos
-    MAX_ENEMIES: 10, // Máximo de inimigos na tela
+    MAX_ENEMIES: 30, // Máximo de inimigos na tela
   },
   KNIFE: {
     WIDTH: 8,
