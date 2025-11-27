@@ -30,52 +30,109 @@
   overflow: hidden;
 }
 
-/* HUD - Menu no canto superior esquerdo */
+/* HUD - Menu no canto superior direito (Terraria style) */
 .game-hud {
   position: absolute;
   top: 1rem;
-  left: 1rem;
+  right: 1rem;
   z-index: 100;
-  background: var(--bg-card);
-  padding: 1rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--text-main);
-}
-
-.hud-content {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  min-width: 120px;
+  min-width: 250px;
 }
 
-.hud-stat {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.95rem;
-  font-weight: bold;
+.hud-bar {
+  background: linear-gradient(180deg, #1a1a2e 0%, #0f3460 100%);
+  border: 2px solid #e94560;
+  border-radius: 4px;
+  padding: 0.5rem;
+  box-shadow:
+    0 0 10px rgba(233, 69, 96, 0.3),
+    inset 0 0 5px rgba(0, 0, 0, 0.5);
+  font-family: 'Arial', sans-serif;
 }
 
 .hud-label {
-  font-size: 1.1rem;
-}
-
-.hud-button {
-  background: var(--player-color);
-  color: white;
-  border: none;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   font-weight: bold;
-  transition: opacity 0.2s;
+  color: #facc15;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.25rem;
 }
 
-.hud-button:hover {
-  opacity: 0.85;
+.hud-fill {
+  width: 100%;
+  height: 12px;
+  background: #000;
+  border: 1px solid #333;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 0.25rem;
+}
+
+.hud-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #e94560, #ff6b7a);
+  box-shadow: 0 0 5px rgba(233, 69, 96, 0.8);
+  transition: width 0.1s ease-in-out;
+}
+
+.health-fill {
+  background: linear-gradient(90deg, #e94560, #ff6b7a);
+}
+
+.hud-value {
+  font-size: 0.75rem;
+  color: #fff;
+  text-align: right;
+  font-weight: bold;
+}
+
+.score-bar {
+  background: linear-gradient(180deg, #1a2e1a 0%, #0f3410 100%);
+  border: 2px solid #4ade80;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+}
+
+.score-bar .hud-label {
+  color: #4ade80;
+  margin-bottom: 0;
+}
+
+.score-bar .hud-value {
+  text-align: left;
+  color: #4ade80;
+}
+
+.hud-pause-btn {
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+  border: 2px solid #60a5fa;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+  box-shadow: 0 0 8px rgba(96, 165, 250, 0.4);
+}
+
+.hud-pause-btn:hover {
+  box-shadow:
+    0 0 12px rgba(96, 165, 250, 0.8),
+    inset 0 0 5px rgba(96, 165, 250, 0.3);
+  transform: translateY(-2px);
+}
+
+.hud-pause-btn:active {
+  transform: translateY(0);
 }
 
 /* Arena do Jogo */
