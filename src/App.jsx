@@ -127,11 +127,7 @@ const App = () => {
   }, []);
 
   // Custom Hooks
-  const { getXPRequiredForLevel, getLevelStats, addXP, getXPDisplay } = useLevelSystem(
-    gameState,
-    setLevel,
-    setCurrentXP
-  );
+  const { getLevelStats, addXP, getXPDisplay } = useLevelSystem(gameState, setLevel, setCurrentXP);
 
   const { startLoop, stopLoop } = useGameLoop(
     gameState,

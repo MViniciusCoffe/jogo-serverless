@@ -28,10 +28,7 @@ export const GameHUD = ({
       <div className="hud-bar xp-bar">
         <div className="hud-label">⭐ EXPERIÊNCIA</div>
         <div className="hud-fill">
-          <div
-            className="hud-bar-fill xp-fill"
-            style={{ width: `${xpDisplay?.progress || 0}%` }}
-          />
+          <div className="hud-bar-fill xp-fill" style={{ width: `${xpDisplay?.progress || 0}%` }} />
         </div>
         <div className="hud-value">
           {currentXP}/{xpDisplay?.needed || 0}

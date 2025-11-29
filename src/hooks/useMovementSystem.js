@@ -57,45 +57,51 @@ export const useMovementSystem = (gameState) => {
    * Atualiza posição de um inimigo
    * Escolhe o alvo mais próximo entre player e data center
    */
-  const updateEnemyMovement = useCallback((enemy) => {
-    const { player, datacenter, container } = gameState.current;
+  const updateEnemyMovement = useCallback(
+    (enemy) => {
+      const { player, datacenter } = gameState.current;
 
-    const playerCenter = getCenter(player);
-    const datacenterCenter = getCenter(datacenter);
-    const enemyCenter = getCenter(enemy);
+      const playerCenter = getCenter(player);
+      const datacenterCenter = getCenter(datacenter);
+      const enemyCenter = getCenter(enemy);
 
-    // Calcula distância até cada alvo
-    const distToPlayer = getDistance(enemyCenter.x, enemyCenter.y, playerCenter.x, playerCenter.y);
-    const distToDatacenter = getDistance(
-      enemyCenter.x,
-      enemyCenter.y,
-      datacenterCenter.x,
-      datacenterCenter.y
-    );
+      // Calcula distância até cada alvo
+      const distToPlayer = getDistance(
+        enemyCenter.x,
+        enemyCenter.y,
+        playerCenter.x,
+        playerCenter.y
+      );
+      const distToDatacenter = getDistance(
+        enemyCenter.x,
+        enemyCenter.y,
+        datacenterCenter.x,
+        datacenterCenter.y
+      );
 
-    // Escolhe o alvo mais próximo
-    let targetX, targetY, distToTarget;
-    if (distToPlayer <= distToDatacenter) {
-      targetX = playerCenter.x;
-      targetY = playerCenter.y;
-      distToTarget = distToPlayer;
-    } else {
-      targetX = datacenterCenter.x;
-      targetY = datacenterCenter.y;
-      distToTarget = distToDatacenter;
-    }
+      // Escolhe o alvo mais próximo
+      let targetX, targetY;
+      if (distToPlayer <= distToDatacenter) {
+        targetX = playerCenter.x;
+        targetY = playerCenter.y;
+      } else {
+        targetX = datacenterCenter.x;
+        targetY = datacenterCenter.y;
+      }
 
-    // Calcula direção
-    const direction = getDirectionVector(enemyCenter.x, enemyCenter.y, targetX, targetY);
+      // Calcula direção
+      const direction = getDirectionVector(enemyCenter.x, enemyCenter.y, targetX, targetY);
 
-    // Aplica movimento
-    enemy.x += direction.dx * GAME_CONFIG.ENEMY.SPEED;
-    enemy.y += direction.dy * GAME_CONFIG.ENEMY.SPEED;
+      // Aplica movimento
+      enemy.x += direction.dx * GAME_CONFIG.ENEMY.SPEED;
+      enemy.y += direction.dy * GAME_CONFIG.ENEMY.SPEED;
 
-    // Clamp ao container (opcional: deixa sair da tela)
-    // enemy.x = Math.max(-enemy.size, Math.min(enemy.x, container.width));
-    // enemy.y = Math.max(-enemy.size, Math.min(enemy.y, container.height));
-  }, [gameState]);
+      // Clamp ao container (opcional: deixa sair da tela)
+      // enemy.x = Math.max(-enemy.size, Math.min(enemy.x, container.width));
+      // enemy.y = Math.max(-enemy.size, Math.min(enemy.y, container.height));
+    },
+    [gameState]
+  );
 
   /**
    * Atualiza movimento de todos os inimigos

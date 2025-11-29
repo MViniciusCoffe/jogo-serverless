@@ -45,6 +45,7 @@ export const GAME_CONFIG = {
     KNIFE_COOLDOWN_REDUCTION: 10, // -10ms de cooldown por nível
     MIN_COOLDOWN: 50, // Cooldown mínimo em ms
     PLAYER_SPEED_BONUS: 0.3, // +0.3 de velocidade por nível
+    DEFENSE_BONUS: 0.03, // +3% de redução de dano por nível (multiplicativo)
     MAX_LEVEL: 100,
   },
   KEYS: {

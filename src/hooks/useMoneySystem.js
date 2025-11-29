@@ -18,12 +18,7 @@ export const useMoneySystem = (gameState, setMoney) => {
 
     moneyDrops.forEach((money, index) => {
       // Calcula distância até a moeda
-      const distance = getDistance(
-        playerCenter.x,
-        playerCenter.y,
-        money.x,
-        money.y
-      );
+      const distance = getDistance(playerCenter.x, playerCenter.y, money.x, money.y);
 
       // Se dentro do raio de coleta
       if (distance < GAME_CONFIG.MONEY.COLLECTION_RADIUS) {

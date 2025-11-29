@@ -11,11 +11,10 @@ export const useLevelSystem = (gameState, setLevel, setCurrentXP) => {
    */
   const getXPRequiredForLevel = useCallback((level) => {
     if (level <= 1) return GAME_CONFIG.LEVEL.BASE_XP_REQUIRED;
-    
+
     // Cresce exponencialmente: baseXP * multiplier^(level-1)
     return Math.floor(
-      GAME_CONFIG.LEVEL.BASE_XP_REQUIRED *
-        Math.pow(GAME_CONFIG.LEVEL.XP_MULTIPLIER, level - 1)
+      GAME_CONFIG.LEVEL.BASE_XP_REQUIRED * Math.pow(GAME_CONFIG.LEVEL.XP_MULTIPLIER, level - 1)
     );
   }, []);
 
@@ -31,9 +30,10 @@ export const useLevelSystem = (gameState, setLevel, setCurrentXP) => {
         GAME_CONFIG.KNIFE.DAMAGE_COOLDOWN - GAME_CONFIG.LEVEL.MIN_COOLDOWN
       ),
       playerSpeedBonus: level * GAME_CONFIG.LEVEL.PLAYER_SPEED_BONUS,
+      defenseMultiplier: 1 - Math.min(level * GAME_CONFIG.LEVEL.DEFENSE_BONUS, 0.8), // Máx 80% redução
       effectiveKnifeDamage: GAME_CONFIG.KNIFE.DAMAGE + level * GAME_CONFIG.LEVEL.KNIFE_DAMAGE_BONUS,
       effectiveKnifeCooldown: Math.max(
-        GAME_CONFIG.KNIFE.DAMAGE_COOLDOWN - (level * GAME_CONFIG.LEVEL.KNIFE_COOLDOWN_REDUCTION),
+        GAME_CONFIG.KNIFE.DAMAGE_COOLDOWN - level * GAME_CONFIG.LEVEL.KNIFE_COOLDOWN_REDUCTION,
         GAME_CONFIG.LEVEL.MIN_COOLDOWN
       ),
       effectivePlayerSpeed: GAME_CONFIG.PLAYER.SPEED + level * GAME_CONFIG.LEVEL.PLAYER_SPEED_BONUS,
@@ -84,22 +84,28 @@ export const useLevelSystem = (gameState, setLevel, setCurrentXP) => {
   /**
    * Retorna progresso para o próximo nível (0 a 100)
    */
-  const getXPProgress = useCallback((level, currentXP) => {
-    const xpNeeded = getXPRequiredForLevel(level + 1);
-    return Math.min(100, (currentXP / xpNeeded) * 100);
-  }, [getXPRequiredForLevel]);
+  const getXPProgress = useCallback(
+    (level, currentXP) => {
+      const xpNeeded = getXPRequiredForLevel(level + 1);
+      return Math.min(100, (currentXP / xpNeeded) * 100);
+    },
+    [getXPRequiredForLevel]
+  );
 
   /**
    * Retorna XP atual e XP necessário para renderizar
    */
-  const getXPDisplay = useCallback((level, currentXP) => {
-    const xpNeeded = getXPRequiredForLevel(level + 1);
-    return {
-      current: currentXP,
-      needed: xpNeeded,
-      progress: getXPProgress(level, currentXP),
-    };
-  }, [getXPRequiredForLevel, getXPProgress]);
+  const getXPDisplay = useCallback(
+    (level, currentXP) => {
+      const xpNeeded = getXPRequiredForLevel(level + 1);
+      return {
+        current: currentXP,
+        needed: xpNeeded,
+        progress: getXPProgress(level, currentXP),
+      };
+    },
+    [getXPRequiredForLevel, getXPProgress]
+  );
 
   return {
     getXPRequiredForLevel,

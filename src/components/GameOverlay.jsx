@@ -35,7 +35,8 @@ export const GameOverlay = ({ onStart, isGameOver, score, reason }) => {
           🛡️ <strong>Seu Escudo (Firewall) neutraliza ameaças automaticamente</strong> ao seu redor!
         </p>
         <p>
-          🖥️ <strong>Proteja o Data Center</strong> no centro do mapa! Se ele cair, a rede colapsará!
+          🖥️ <strong>Proteja o Data Center</strong> no centro do mapa! Se ele cair, a rede
+          colapsará!
         </p>
         <p>
           🔴 Cuidado! <strong>Ataques maliciosos</strong> (
