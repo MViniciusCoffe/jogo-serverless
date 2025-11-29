@@ -38,6 +38,15 @@ export const GAME_CONFIG = {
     DROP_CHANCE: 0.1, // 10% de chance de dropar
     COLLECTION_RADIUS: 60, // Raio de coleta automática
   },
+  LEVEL: {
+    BASE_XP_REQUIRED: 100, // XP necessário para level 1
+    XP_MULTIPLIER: 1.5, // Multiplicador de XP por nível (cresce exponencialmente)
+    KNIFE_DAMAGE_BONUS: 0.5, // +0.5 de dano por nível (ex: level 5 = +2.5 dano)
+    KNIFE_COOLDOWN_REDUCTION: 10, // -10ms de cooldown por nível
+    MIN_COOLDOWN: 50, // Cooldown mínimo em ms
+    PLAYER_SPEED_BONUS: 0.3, // +0.3 de velocidade por nível
+    MAX_LEVEL: 100,
+  },
   KEYS: {
     w: false,
     a: false,

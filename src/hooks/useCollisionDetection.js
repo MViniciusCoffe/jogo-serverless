@@ -6,7 +6,16 @@ import { checkAABBCollision, checkCircleCollision, getDistance } from '../utils/
  * Hook que gerencia toda a lógica de detecção de colisão
  * Inclui: player vs enemies, knife vs enemies, enemies vs datacenter
  */
-export const useCollisionDetection = (gameState, setScore, setHealth, setDatacenterHealth, setEnemies, onGameOver) => {
+export const useCollisionDetection = (
+  gameState,
+  setScore,
+  setHealth,
+  setDatacenterHealth,
+  setEnemies,
+  addXP,
+  getLevelStats,
+  onGameOver
+) => {
   /**
    * Verifica colisões do player com inimigos
    */
@@ -56,9 +65,12 @@ export const useCollisionDetection = (gameState, setScore, setHealth, setDatacen
    * Verifica colisões da faca com inimigos
    */
   const checkKnifeCollisions = useCallback(
-    (enemies, knife) => {
+    (enemies, knife, currentLevel) => {
       const enemiesToRemove = [];
       const knifeRadius = GAME_CONFIG.KNIFE.HEIGHT / 2;
+      
+      // Obtém os bônus do nível atual
+      const levelStats = getLevelStats(currentLevel);
 
       enemies.forEach((enemy, index) => {
         const enemyCenterX = enemy.x + enemy.size / 2;
@@ -68,15 +80,19 @@ export const useCollisionDetection = (gameState, setScore, setHealth, setDatacen
         if (checkCircleCollision(knife.x, knife.y, enemyCenterX, enemyCenterY, knifeRadius + enemyRadius)) {
           const now = Date.now();
 
-          // Respeita o cooldown de dano
-          if (now - enemy.lastDamageTime > GAME_CONFIG.KNIFE.DAMAGE_COOLDOWN) {
-            enemy.health -= GAME_CONFIG.KNIFE.DAMAGE;
+          // Respeita o cooldown de dano (reduzido por nível)
+          if (now - enemy.lastDamageTime > levelStats.effectiveKnifeCooldown) {
+            // Dano aumenta com o nível
+            enemy.health -= levelStats.effectiveKnifeDamage;
             enemy.lastDamageTime = now;
 
             // Se morreu, marca para remover
             if (enemy.health <= 0) {
               enemiesToRemove.push(index);
               setScore((s) => s + 10);
+              
+              // Ganha XP ao matar inimigo
+              addXP(25);
 
               // 10% de chance de dropar moeda
               if (Math.random() < GAME_CONFIG.MONEY.DROP_CHANCE) {
@@ -94,14 +110,14 @@ export const useCollisionDetection = (gameState, setScore, setHealth, setDatacen
 
       return enemiesToRemove;
     },
-    [gameState, setScore]
+    [gameState, setScore, addXP, getLevelStats]
   );
 
   /**
    * Executa todas as colisões e retorna inimigos para remover
    */
   const handleAllCollisions = useCallback(
-    (enemies, player, knife, datacenter) => {
+    (enemies, player, knife, datacenter, currentLevel) => {
       // Colisões com player
       const playerHits = checkPlayerCollisions(enemies, player);
 
@@ -109,7 +125,7 @@ export const useCollisionDetection = (gameState, setScore, setHealth, setDatacen
       checkDatacenterCollisions(enemies, datacenter);
 
       // Colisões com faca
-      const knifeHits = checkKnifeCollisions(enemies, knife);
+      const knifeHits = checkKnifeCollisions(enemies, knife, currentLevel);
 
       // Combina índices únicos para remover
       const allHitsSet = new Set([...playerHits, ...knifeHits]);

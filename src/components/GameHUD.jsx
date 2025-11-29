@@ -7,6 +7,9 @@ export const GameHUD = ({
   maxHealth,
   maxDatacenterHealth,
   money,
+  level,
+  currentXP,
+  xpDisplay,
   gameActive,
   onPause,
 }) => {
@@ -15,6 +18,24 @@ export const GameHUD = ({
       <div className="hud-bar money-bar">
         <div className="hud-label">💰 MOEDAS</div>
         <div className="hud-value">{money}</div>
+      </div>
+
+      <div className="hud-bar level-bar">
+        <div className="hud-label">📊 NÍVEL</div>
+        <div className="hud-value">{level}</div>
+      </div>
+
+      <div className="hud-bar xp-bar">
+        <div className="hud-label">⭐ EXPERIÊNCIA</div>
+        <div className="hud-fill">
+          <div
+            className="hud-bar-fill xp-fill"
+            style={{ width: `${xpDisplay?.progress || 0}%` }}
+          />
+        </div>
+        <div className="hud-value">
+          {currentXP}/{xpDisplay?.needed || 0}
+        </div>
       </div>
 
       <div className="hud-bar health-bar">

@@ -19,6 +19,8 @@ export const useGameLoop = (
   setDatacenterHealth,
   setMoney,
   setEnemies,
+  addXP,
+  getLevelStats,
   onGameOver
 ) => {
   const requestRef = useRef();
@@ -31,6 +33,8 @@ export const useGameLoop = (
     setHealth,
     setDatacenterHealth,
     setEnemies,
+    addXP,
+    getLevelStats,
     onGameOver
   );
   const { updatePlayerMovement, updateKnifeMovement, updateAllEnemyMovement } =
@@ -54,8 +58,8 @@ export const useGameLoop = (
       updateKnifeMovement();
       updateAllEnemyMovement();
 
-      // 3. Detecta todas as colisões
-      handleAllCollisions(enemies, player, knife, datacenter);
+      // 3. Detecta todas as colisões (passa o nível atual)
+      handleAllCollisions(enemies, player, knife, datacenter, gameState.current.level);
 
       // 4. Atualiza coleta de moedas
       updateMoneyCollection();

@@ -4,6 +4,7 @@ import { useGameLoop } from './hooks/useGameLoop';
 import { useKeyboardControls } from './hooks/useKeyboardControls';
 import { useContainerSize } from './hooks/useContainerSize';
 import { usePauseKey } from './hooks/usePauseKey';
+import { useLevelSystem } from './hooks/useLevelSystem';
 import { GameHUD } from './components/GameHUD';
 import { GameArena } from './components/GameArena';
 import { GameOverlay } from './components/GameOverlay';
@@ -12,6 +13,8 @@ import './App.css';
 const App = () => {
   // Estados do React
   const [score, setScore] = useState(0);
+  const [level, setLevel] = useState(1);
+  const [currentXP, setCurrentXP] = useState(0);
   const [health, setHealth] = useState(GAME_CONFIG.PLAYER.MAX_HEALTH);
   const [datacenterHealth, setDatacenterHealth] = useState(GAME_CONFIG.DATA_CENTER.MAX_HEALTH);
   const [money, setMoney] = useState(0);
@@ -38,6 +41,8 @@ const App = () => {
       size: GAME_CONFIG.PLAYER.SIZE,
       speed: GAME_CONFIG.PLAYER.SPEED,
     },
+    level: 1,
+    currentXP: 0,
     datacenter: {
       x: GAME_CONFIG.DATA_CENTER.POSITION_X === 'center' ? 0 : GAME_CONFIG.DATA_CENTER.POSITION_X,
       y: GAME_CONFIG.DATA_CENTER.POSITION_Y === 'center' ? 0 : GAME_CONFIG.DATA_CENTER.POSITION_Y,
@@ -61,6 +66,8 @@ const App = () => {
   // Handlers
   const startGame = useCallback(() => {
     setScore(0);
+    setLevel(1);
+    setCurrentXP(0);
     setHealth(GAME_CONFIG.PLAYER.MAX_HEALTH);
     setDatacenterHealth(GAME_CONFIG.DATA_CENTER.MAX_HEALTH);
     setMoney(0);
@@ -98,6 +105,8 @@ const App = () => {
       gameState.current.datacenter.y = GAME_CONFIG.DATA_CENTER.POSITION_Y;
     }
 
+    gameState.current.level = 1;
+    gameState.current.currentXP = 0;
     gameState.current.datacenter.health = GAME_CONFIG.DATA_CENTER.MAX_HEALTH;
     gameState.current.knife.angle = 0;
     gameState.current.enemies = [];
@@ -118,6 +127,12 @@ const App = () => {
   }, []);
 
   // Custom Hooks
+  const { getXPRequiredForLevel, getLevelStats, addXP, getXPDisplay } = useLevelSystem(
+    gameState,
+    setLevel,
+    setCurrentXP
+  );
+
   const { startLoop, stopLoop } = useGameLoop(
     gameState,
     playerRef,
@@ -128,6 +143,8 @@ const App = () => {
     setDatacenterHealth,
     setMoney,
     setEnemies,
+    addXP,
+    getLevelStats,
     (reason) => {
       setGameActive(false);
       setGameOverReason(reason);
@@ -220,6 +237,9 @@ const App = () => {
           health={health}
           datacenterHealth={datacenterHealth}
           money={money}
+          level={level}
+          currentXP={currentXP}
+          xpDisplay={getXPDisplay(level, currentXP)}
           maxHealth={GAME_CONFIG.PLAYER.MAX_HEALTH}
           maxDatacenterHealth={GAME_CONFIG.DATA_CENTER.MAX_HEALTH}
           gameActive={gameActive && !isPaused}
