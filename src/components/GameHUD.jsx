@@ -1,6 +1,15 @@
 import React from 'react';
 
-export const GameHUD = ({ score, health, maxHealth, money, gameActive, onPause }) => {
+export const GameHUD = ({
+  score,
+  health,
+  datacenterHealth,
+  maxHealth,
+  maxDatacenterHealth,
+  money,
+  gameActive,
+  onPause,
+}) => {
   return (
     <div className="game-hud">
       <div className="hud-bar money-bar">
@@ -9,7 +18,7 @@ export const GameHUD = ({ score, health, maxHealth, money, gameActive, onPause }
       </div>
 
       <div className="hud-bar health-bar">
-        <div className="hud-label">🛡️ INTEGRIDADE</div>
+        <div className="hud-label">🛡️ INTEGRIDADE DO PLAYER</div>
         <div className="hud-fill">
           <div
             className="hud-bar-fill health-fill"
@@ -18,6 +27,19 @@ export const GameHUD = ({ score, health, maxHealth, money, gameActive, onPause }
         </div>
         <div className="hud-value">
           {Math.floor(health)}/{maxHealth}%
+        </div>
+      </div>
+
+      <div className="hud-bar datacenter-bar">
+        <div className="hud-label">🖥️ DATA CENTER</div>
+        <div className="hud-fill">
+          <div
+            className="hud-bar-fill datacenter-fill"
+            style={{ width: `${(datacenterHealth / maxDatacenterHealth) * 100}%` }}
+          />
+        </div>
+        <div className="hud-value">
+          {Math.floor(datacenterHealth)}/{maxDatacenterHealth}
         </div>
       </div>
 

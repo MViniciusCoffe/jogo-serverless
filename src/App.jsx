@@ -13,10 +13,12 @@ const App = () => {
   // Estados do React
   const [score, setScore] = useState(0);
   const [health, setHealth] = useState(GAME_CONFIG.PLAYER.MAX_HEALTH);
+  const [datacenterHealth, setDatacenterHealth] = useState(GAME_CONFIG.DATA_CENTER.MAX_HEALTH);
   const [money, setMoney] = useState(0);
   const [gameActive, setGameActive] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [gameOverReason, setGameOverReason] = useState(null); // 'player' ou 'datacenter'
   const [enemies, setEnemies] = useState([]);
   const [moneyDrops, setMoneyDrops] = useState([]);
 
@@ -36,6 +38,13 @@ const App = () => {
       size: GAME_CONFIG.PLAYER.SIZE,
       speed: GAME_CONFIG.PLAYER.SPEED,
     },
+    datacenter: {
+      x: GAME_CONFIG.DATA_CENTER.POSITION_X === 'center' ? 0 : GAME_CONFIG.DATA_CENTER.POSITION_X,
+      y: GAME_CONFIG.DATA_CENTER.POSITION_Y === 'center' ? 0 : GAME_CONFIG.DATA_CENTER.POSITION_Y,
+      size: GAME_CONFIG.DATA_CENTER.SIZE,
+      health: GAME_CONFIG.DATA_CENTER.MAX_HEALTH,
+      lastDamageTime: 0,
+    },
     knife: {
       x: 0,
       y: 0,
@@ -53,8 +62,10 @@ const App = () => {
   const startGame = useCallback(() => {
     setScore(0);
     setHealth(GAME_CONFIG.PLAYER.MAX_HEALTH);
+    setDatacenterHealth(GAME_CONFIG.DATA_CENTER.MAX_HEALTH);
     setMoney(0);
     setIsGameOver(false);
+    setGameOverReason(null);
     setIsPaused(false);
 
     // Calcular posição do player (centro ou posição fixa)
@@ -72,6 +83,22 @@ const App = () => {
       gameState.current.player.y = GAME_CONFIG.PLAYER.INITIAL_Y;
     }
 
+    // Calcular posição do data center (centro ou posição fixa)
+    if (GAME_CONFIG.DATA_CENTER.POSITION_X === 'center') {
+      gameState.current.datacenter.x =
+        gameState.current.container.width / 2 - GAME_CONFIG.DATA_CENTER.SIZE / 2;
+    } else {
+      gameState.current.datacenter.x = GAME_CONFIG.DATA_CENTER.POSITION_X;
+    }
+
+    if (GAME_CONFIG.DATA_CENTER.POSITION_Y === 'center') {
+      gameState.current.datacenter.y =
+        gameState.current.container.height / 2 - GAME_CONFIG.DATA_CENTER.SIZE / 2;
+    } else {
+      gameState.current.datacenter.y = GAME_CONFIG.DATA_CENTER.POSITION_Y;
+    }
+
+    gameState.current.datacenter.health = GAME_CONFIG.DATA_CENTER.MAX_HEALTH;
     gameState.current.knife.angle = 0;
     gameState.current.enemies = [];
     gameState.current.moneyDrops = [];
@@ -98,10 +125,12 @@ const App = () => {
     enemiesRef,
     setScore,
     setHealth,
+    setDatacenterHealth,
     setMoney,
     setEnemies,
-    () => {
+    (reason) => {
       setGameActive(false);
+      setGameOverReason(reason);
       setIsGameOver(true);
     }
   );
@@ -153,15 +182,24 @@ const App = () => {
           playerSize={GAME_CONFIG.PLAYER.SIZE}
           knifeWidth={GAME_CONFIG.KNIFE.WIDTH}
           knifeHeight={GAME_CONFIG.KNIFE.HEIGHT}
+          datacenterSize={GAME_CONFIG.DATA_CENTER.SIZE}
           enemies={enemies}
           moneyDrops={moneyDrops}
+          gameState={gameState}
         />
 
         {!gameActive && !isPaused && !isGameOver && (
           <GameOverlay onStart={startGame} isGameOver={isGameOver} score={score} />
         )}
 
-        {isGameOver && <GameOverlay onStart={startGame} isGameOver={isGameOver} score={score} />}
+        {isGameOver && (
+          <GameOverlay
+            onStart={startGame}
+            isGameOver={isGameOver}
+            score={score}
+            reason={gameOverReason}
+          />
+        )}
 
         {isPaused && !isGameOver && (
           <div className="pause-overlay">
@@ -180,8 +218,10 @@ const App = () => {
         <GameHUD
           score={score}
           health={health}
+          datacenterHealth={datacenterHealth}
           money={money}
           maxHealth={GAME_CONFIG.PLAYER.MAX_HEALTH}
+          maxDatacenterHealth={GAME_CONFIG.DATA_CENTER.MAX_HEALTH}
           gameActive={gameActive && !isPaused}
           onPause={pauseGame}
         />

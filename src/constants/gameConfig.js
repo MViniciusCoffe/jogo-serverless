@@ -13,7 +13,9 @@ export const GAME_CONFIG = {
     SPAWN_INTERVAL: 2000, // Spawn a cada 2 segundos
     MAX_ENEMIES: 30, // Máximo de inimigos na tela
     HEALTH: 3, // Vida de cada inimigo
+    MAX_HEALTH: 3, // Vida máxima (para referência)
     DAMAGE: 95, // Dano que causa ao jogador
+    DATACENTER_DAMAGE: 25, // Dano que causa ao data center
   },
   KNIFE: {
     WIDTH: 8,
@@ -21,6 +23,14 @@ export const GAME_CONFIG = {
     ORBIT_RADIUS: 50,
     ROTATION_SPEED: 0.05,
     DAMAGE: 2, // Dano da espada por hit
+    DAMAGE_COOLDOWN: 200, // Cooldown em ms entre hits no mesmo inimigo
+  },
+  DATA_CENTER: {
+    SIZE: 80,
+    MAX_HEALTH: 500,
+    POSITION_X: 'center',
+    POSITION_Y: 'center',
+    COLLISION_DAMAGE_INTERVAL: 1000, // Dano a cada 1 segundo enquanto em contato
   },
   MONEY: {
     SIZE: 12,

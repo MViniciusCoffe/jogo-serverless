@@ -9,6 +9,7 @@ export const useGameLoop = (
   enemiesRef,
   setScore,
   setHealth,
+  setDatacenterHealth,
   setMoney,
   setEnemies,
   onGameOver
@@ -53,6 +54,8 @@ export const useGameLoop = (
       y,
       size: GAME_CONFIG.ENEMY.SIZE,
       health: GAME_CONFIG.ENEMY.HEALTH,
+      lastDamageTime: 0, // Para cooldown de dano da espada
+      lastDamageToDatacenter: 0, // Para cooldown de dano ao data center
     });
 
     // 2. IMPORTANTE: Avisa o React para desenhar o novo inimigo
@@ -99,13 +102,37 @@ export const useGameLoop = (
       // Atualizar posição dos inimigos
       const enemiesToRemove = [];
       enemies.forEach((enemy, index) => {
-        const enemyDx = playerCenterX - (enemy.x + enemy.size / 2);
-        const enemyDy = playerCenterY - (enemy.y + enemy.size / 2);
-        const distance = Math.sqrt(enemyDx * enemyDx + enemyDy * enemyDy);
+        const playerCenterX = player.x + player.size / 2;
+        const playerCenterY = player.y + player.size / 2;
+        const datacenterCenterX = gameState.current.datacenter.x + gameState.current.datacenter.size / 2;
+        const datacenterCenterY = gameState.current.datacenter.y + gameState.current.datacenter.size / 2;
 
-        if (distance > 0) {
-          enemy.x += (enemyDx / distance) * GAME_CONFIG.ENEMY.SPEED;
-          enemy.y += (enemyDy / distance) * GAME_CONFIG.ENEMY.SPEED;
+        // Calcular distância até o player e data center
+        const distToPlayerX = playerCenterX - (enemy.x + enemy.size / 2);
+        const distToPlayerY = playerCenterY - (enemy.y + enemy.size / 2);
+        const distToPlayer = Math.sqrt(distToPlayerX * distToPlayerX + distToPlayerY * distToPlayerY);
+
+        const distToDatacenterX = datacenterCenterX - (enemy.x + enemy.size / 2);
+        const distToDatacenterY = datacenterCenterY - (enemy.y + enemy.size / 2);
+        const distToDatacenter = Math.sqrt(
+          distToDatacenterX * distToDatacenterX + distToDatacenterY * distToDatacenterY
+        );
+
+        // Inimigo escolhe o alvo mais próximo (player ou data center)
+        let targetX, targetY, distToTarget;
+        if (distToPlayer <= distToDatacenter) {
+          targetX = distToPlayerX;
+          targetY = distToPlayerY;
+          distToTarget = distToPlayer;
+        } else {
+          targetX = distToDatacenterX;
+          targetY = distToDatacenterY;
+          distToTarget = distToDatacenter;
+        }
+
+        if (distToTarget > 0) {
+          enemy.x += (targetX / distToTarget) * GAME_CONFIG.ENEMY.SPEED;
+          enemy.y += (targetY / distToTarget) * GAME_CONFIG.ENEMY.SPEED;
         }
 
         // Colisões com o jogador
@@ -118,9 +145,29 @@ export const useGameLoop = (
           enemiesToRemove.push(index);
           setHealth((h) => {
             const newHealth = Math.max(0, h - GAME_CONFIG.ENEMY.DAMAGE);
-            if (newHealth <= 0) onGameOver();
+            if (newHealth <= 0) onGameOver('player');
             return newHealth;
           });
+        }
+
+        // Colisões com o data center
+        const datacenter = gameState.current.datacenter;
+        if (
+          datacenter.x < enemy.x + enemy.size &&
+          datacenter.x + datacenter.size > enemy.x &&
+          datacenter.y < enemy.y + enemy.size &&
+          datacenter.y + datacenter.size > enemy.y
+        ) {
+          // Inimigo causa dano ao data center a cada intervalo
+          const now = Date.now();
+          if (now - enemy.lastDamageToDatacenter > GAME_CONFIG.DATA_CENTER.COLLISION_DAMAGE_INTERVAL) {
+            setDatacenterHealth((h) => {
+              const newHealth = Math.max(0, h - GAME_CONFIG.ENEMY.DATACENTER_DAMAGE);
+              if (newHealth <= 0) onGameOver('datacenter');
+              return newHealth;
+            });
+            enemy.lastDamageToDatacenter = now;
+          }
         }
 
         // Colisões com a faca
@@ -132,28 +179,36 @@ export const useGameLoop = (
         const distY = knife.y - enemyCenterY;
 
         if (Math.sqrt(distX * distX + distY * distY) < knifeRadius + enemyRadius) {
-          enemy.health -= GAME_CONFIG.KNIFE.DAMAGE;
+          const now = Date.now();
+          // Só causa dano se passou o cooldown
+          if (now - enemy.lastDamageTime > GAME_CONFIG.KNIFE.DAMAGE_COOLDOWN) {
+            enemy.health -= GAME_CONFIG.KNIFE.DAMAGE;
+            enemy.lastDamageTime = now;
 
-          if (enemy.health <= 0) {
-            enemiesToRemove.push(index);
-            setScore((s) => s + 10);
+            if (enemy.health <= 0) {
+              enemiesToRemove.push(index);
+              setScore((s) => s + 10);
 
-            // 10% de chance de dropar dinheiro
-            if (Math.random() < GAME_CONFIG.MONEY.DROP_CHANCE) {
-              gameState.current.moneyDrops.push({
-                id: Date.now() + Math.random(),
-                x: enemyCenterX,
-                y: enemyCenterY,
-                value: GAME_CONFIG.MONEY.VALUE,
-              });
+              // 10% de chance de dropar dinheiro
+              if (Math.random() < GAME_CONFIG.MONEY.DROP_CHANCE) {
+                gameState.current.moneyDrops.push({
+                  id: Date.now() + Math.random(),
+                  x: enemyCenterX,
+                  y: enemyCenterY,
+                  value: GAME_CONFIG.MONEY.VALUE,
+                });
+              }
             }
           }
         }
       });
 
-      // Remover inimigos mortos
+      // Remover inimigos mortos (filtrando duplicatas)
       if (enemiesToRemove.length > 0) {
-        enemiesToRemove.reverse().forEach((index) => {
+        // Criar um Set com índices únicos
+        const uniqueIndices = new Set(enemiesToRemove);
+        const sortedIndices = Array.from(uniqueIndices).sort((a, b) => b - a);
+        sortedIndices.forEach((index) => {
           enemies.splice(index, 1);
         });
         // 3. IMPORTANTE: Avisa o React que inimigos morreram
@@ -210,6 +265,7 @@ export const useGameLoop = (
       enemiesRef,
       setScore,
       setHealth,
+      setDatacenterHealth,
       setMoney,
       setEnemies,
       spawnEnemy,

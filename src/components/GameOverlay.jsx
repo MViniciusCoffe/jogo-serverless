@@ -1,11 +1,16 @@
 import React from 'react';
 
-export const GameOverlay = ({ onStart, isGameOver, score }) => {
+export const GameOverlay = ({ onStart, isGameOver, score, reason }) => {
   if (isGameOver) {
+    const gameOverMessage =
+      reason === 'datacenter'
+        ? '🚨 DATA CENTER DESTRUÍDO! A REDE COLAPSOU!'
+        : '🚨 SISTEMA COMPROMETIDO!';
+
     return (
       <div className="overlay">
         <div className="overlay-content game-over">
-          <h2>🚨 SISTEMA COMPROMETIDO!</h2>
+          <h2>{gameOverMessage}</h2>
           <p className="final-score">Conhecimento Adquirido: {score} pontos</p>
           <button onClick={onStart} className="btn btn-start">
             INICIAR NOVA DEFESA
@@ -28,6 +33,9 @@ export const GameOverlay = ({ onStart, isGameOver, score }) => {
         </p>
         <p>
           🛡️ <strong>Seu Escudo (Firewall) neutraliza ameaças automaticamente</strong> ao seu redor!
+        </p>
+        <p>
+          🖥️ <strong>Proteja o Data Center</strong> no centro do mapa! Se ele cair, a rede colapsará!
         </p>
         <p>
           🔴 Cuidado! <strong>Ataques maliciosos</strong> (
