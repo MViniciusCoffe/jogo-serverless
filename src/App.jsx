@@ -8,6 +8,7 @@ import { useLevelSystem } from './hooks/useLevelSystem';
 import { GameHUD } from './components/GameHUD';
 import { GameArena } from './components/GameArena';
 import { GameOverlay } from './components/GameOverlay';
+import { MainMenu } from './components/MainMenu';
 import './App.css';
 
 const App = () => {
@@ -201,9 +202,7 @@ const App = () => {
           gameState={gameState}
         />
 
-        {!gameActive && !isPaused && !isGameOver && (
-          <GameOverlay onStart={startGame} isGameOver={isGameOver} score={score} />
-        )}
+        {!gameActive && !isPaused && !isGameOver && <MainMenu onStart={startGame} />}
 
         {isGameOver && (
           <GameOverlay
