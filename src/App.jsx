@@ -128,13 +128,12 @@ const App = () => {
   }, []);
 
   const backToMenu = useCallback(() => {
-    stopLoop();
     setGameActive(false);
     setIsPaused(false);
     setIsGameOver(false);
     setGameOverReason(null);
     loopStartedRef.current = false;
-  }, [stopLoop]);
+  }, []);
 
   // Custom Hooks
   const { getLevelStats, addXP, getXPDisplay } = useLevelSystem(gameState, setLevel, setCurrentXP);

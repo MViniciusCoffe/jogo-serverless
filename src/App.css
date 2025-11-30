@@ -510,7 +510,9 @@
     text-shadow: 0 0 10px rgba(250, 204, 21, 0.4);
   }
   to {
-    text-shadow: 0 0 30px rgba(250, 204, 21, 0.8), 0 0 50px rgba(250, 204, 21, 0.4);
+    text-shadow:
+      0 0 30px rgba(250, 204, 21, 0.8),
+      0 0 50px rgba(250, 204, 21, 0.4);
   }
 }
 
@@ -579,7 +581,9 @@
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 25px rgba(96, 165, 250, 0.8), 0 0 40px rgba(59, 130, 246, 0.4);
+  box-shadow:
+    0 0 25px rgba(96, 165, 250, 0.8),
+    0 0 40px rgba(59, 130, 246, 0.4);
   border-color: #93c5fd;
 }
 
