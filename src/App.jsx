@@ -127,6 +127,15 @@ const App = () => {
     setIsPaused(false);
   }, []);
 
+  const backToMenu = useCallback(() => {
+    stopLoop();
+    setGameActive(false);
+    setIsPaused(false);
+    setIsGameOver(false);
+    setGameOverReason(null);
+    loopStartedRef.current = false;
+  }, [stopLoop]);
+
   // Custom Hooks
   const { getLevelStats, addXP, getXPDisplay } = useLevelSystem(gameState, setLevel, setCurrentXP);
 
@@ -220,7 +229,7 @@ const App = () => {
               <button onClick={resumeGame} className="btn btn-resume">
                 CONTINUAR DEFENDENDO
               </button>
-              <button onClick={startGame} className="btn btn-restart">
+              <button onClick={backToMenu} className="btn btn-restart">
                 REINICIAR DEFESA
               </button>
             </div>
