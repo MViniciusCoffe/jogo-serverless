@@ -19,28 +19,15 @@ export const GameHUD = ({
     <div className="game-hud">
       {/* Seção Principal - Sempre visível */}
       <div className="hud-main">
-        {/* Coluna Esquerda */}
+        {/* Coluna Esquerda - VIDA */}
         <div className="hud-column">
-          {/* Nível e XP */}
-          <div className="hud-card level-card">
-            <div className="card-header">
-              <span className="card-icon">📊</span>
-              <span className="card-title">Nível {level}</span>
-            </div>
-            <div className="hud-fill mini">
-              <div
-                className="hud-bar-fill xp-fill"
-                style={{ width: `${xpDisplay?.progress || 0}%` }}
-              />
-            </div>
-            <div className="card-value">{xpDisplay?.progress?.toFixed(0) || 0}%</div>
-          </div>
+          <div className="column-label">VIDA</div>
 
           {/* Integridade do Player */}
           <div className="hud-card health-card">
             <div className="card-header">
-              <span className="card-icon">🛡️</span>
-              <span className="card-title">Integridade</span>
+              <span className="card-icon">�️</span>
+              <span className="card-title">Player</span>
             </div>
             <div className="hud-fill mini">
               <div
@@ -52,25 +39,44 @@ export const GameHUD = ({
               {Math.floor(health)}/{maxHealth}
             </div>
           </div>
-        </div>
 
-        {/* Coluna Direita */}
-        <div className="hud-column">
           {/* Data Center */}
           <div className="hud-card datacenter-card">
             <div className="card-header">
-              <span className="card-icon">🖥️</span>
+              <span className="card-icon">�️</span>
               <span className="card-title">Servidor</span>
             </div>
             <div className="hud-fill mini">
               <div
                 className="hud-bar-fill datacenter-fill"
-                style={{ width: `${(datacenterHealth / maxDatacenterHealth) * 100}%` }}
+                style={{
+                  width: `${(datacenterHealth / maxDatacenterHealth) * 100}%`,
+                }}
               />
             </div>
             <div className="card-value">
               {Math.floor(datacenterHealth)}/{maxDatacenterHealth}
             </div>
+          </div>
+        </div>
+
+        {/* Coluna Direita - XP & SCORE */}
+        <div className="hud-column">
+          <div className="column-label">PROGRESSÃO</div>
+
+          {/* Nível e XP */}
+          <div className="hud-card level-card">
+            <div className="card-header">
+              <span className="card-icon">�</span>
+              <span className="card-title">Nível {level}</span>
+            </div>
+            <div className="hud-fill mini">
+              <div
+                className="hud-bar-fill xp-fill"
+                style={{ width: `${xpDisplay?.progress || 0}%` }}
+              />
+            </div>
+            <div className="card-value">{xpDisplay?.progress?.toFixed(0) || 0}%</div>
           </div>
 
           {/* Conhecimento */}
