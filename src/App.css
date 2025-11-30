@@ -31,7 +31,7 @@
   overflow: hidden;
 }
 
-/* HUD - Menu no canto superior direito (Terraria style) */
+/* HUD - Menu no canto superior direito (Redesenho Compacto) */
 .game-hud {
   position: absolute;
   top: 1rem;
@@ -40,37 +40,75 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  min-width: 250px;
+  width: auto;
+  max-width: 380px;
 }
 
-.hud-bar {
-  background: linear-gradient(180deg, #1a1a2e 0%, #0f3460 100%);
+/* Seção Principal com 2 Colunas */
+.hud-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.hud-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Cards do HUD */
+.hud-card {
+  background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
   border: 2px solid #e94560;
-  border-radius: 4px;
-  padding: 0.5rem;
+  border-radius: 6px;
+  padding: 0.75rem;
   box-shadow:
     0 0 10px rgba(233, 69, 96, 0.3),
     inset 0 0 5px rgba(0, 0, 0, 0.5);
   font-family: 'Arial', sans-serif;
 }
 
-.hud-label {
-  font-size: 0.75rem;
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-icon {
+  font-size: 1.2rem;
+}
+
+.card-title {
+  font-size: 0.8rem;
   font-weight: bold;
   color: #facc15;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 0.25rem;
+  letter-spacing: 0.5px;
 }
 
-.hud-fill {
+.card-value {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #fff;
+  text-align: right;
+}
+
+.card-value.large {
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+/* Barras Miniaturizadas */
+.hud-fill.mini {
   width: 100%;
-  height: 12px;
+  height: 8px;
   background: #000;
   border: 1px solid #333;
   border-radius: 2px;
   overflow: hidden;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.4rem;
 }
 
 .hud-bar-fill {
@@ -80,44 +118,31 @@
   transition: width 0.1s ease-in-out;
 }
 
-.health-fill {
-  background: linear-gradient(90deg, #e94560, #ff6b7a);
+/* Cores específicas dos cards */
+.level-card {
+  border-color: #c084fc;
+  background: linear-gradient(135deg, #2e1a2e 0%, #341034 100%);
 }
 
-.hud-value {
-  font-size: 0.75rem;
-  color: #fff;
-  text-align: right;
-  font-weight: bold;
+.level-card .card-title {
+  color: #c084fc;
 }
 
-.score-bar {
-  background: linear-gradient(180deg, #1a2e1a 0%, #0f3410 100%);
-  border: 2px solid #4ade80;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0.75rem;
+.health-card {
+  border-color: #ef4444;
+  background: linear-gradient(135deg, #2e1a1a 0%, #341000 100%);
 }
 
-.money-bar {
-  background: linear-gradient(180deg, #2e1a1a 0%, #341000 100%);
-  border: 2px solid #fbbf24;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0.75rem;
+.health-card .card-title {
+  color: #ef4444;
 }
 
-.datacenter-bar {
-  background: linear-gradient(180deg, #1a2e1a 0%, #0f3410 100%);
-  border: 2px solid #10b981;
-  display: flex;
-  flex-direction: column;
-  padding: 0.5rem;
+.datacenter-card {
+  border-color: #10b981;
+  background: linear-gradient(135deg, #1a2e1a 0%, #0f3410 100%);
 }
 
-.datacenter-bar .hud-label {
+.datacenter-card .card-title {
   color: #10b981;
 }
 
@@ -126,35 +151,13 @@
   box-shadow: 0 0 5px rgba(16, 185, 129, 0.8);
 }
 
-.level-bar {
-  background: linear-gradient(180deg, #2e1a2e 0%, #341034 100%);
-  border: 2px solid #c084fc;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0.75rem;
+.score-card {
+  border-color: #4ade80;
+  background: linear-gradient(135deg, #1a2e1a 0%, #0f3410 100%);
 }
 
-.level-bar .hud-label {
-  color: #c084fc;
-}
-
-.level-bar .hud-value {
-  color: #e9d5ff;
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-.xp-bar {
-  background: linear-gradient(180deg, #1a2e1a 0%, #0f3410 100%);
-  border: 2px solid #86efac;
-  display: flex;
-  flex-direction: column;
-  padding: 0.5rem;
-}
-
-.xp-bar .hud-label {
-  color: #86efac;
+.score-card .card-title {
+  color: #4ade80;
 }
 
 .xp-fill {
@@ -162,24 +165,59 @@
   box-shadow: 0 0 5px rgba(74, 222, 128, 0.8);
 }
 
-.score-bar .hud-label {
-  color: #4ade80;
-  margin-bottom: 0;
+.health-fill {
+  background: linear-gradient(90deg, #e94560, #ff6b7a);
 }
 
-.score-bar .hud-value {
-  text-align: left;
-  color: #4ade80;
+/* Botões Inferiores */
+.hud-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.hud-toggle-btn {
+  background: linear-gradient(180deg, #6366f1 0%, #4f46e5 100%);
+  border: 2px solid #818cf8;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+  box-shadow: 0 0 8px rgba(129, 140, 248, 0.4);
+}
+
+.hud-toggle-btn:hover {
+  box-shadow:
+    0 0 12px rgba(129, 140, 248, 0.8),
+    inset 0 0 5px rgba(129, 140, 248, 0.3);
+  transform: translateY(-1px);
+}
+
+.hud-toggle-btn.active {
+  background: linear-gradient(180deg, #818cf8 0%, #6366f1 100%);
+  box-shadow:
+    0 0 15px rgba(129, 140, 248, 0.8),
+    inset 0 0 5px rgba(129, 140, 248, 0.5);
+}
+
+.hud-toggle-btn:active {
+  transform: translateY(0);
 }
 
 .hud-pause-btn {
   background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
   border: 2px solid #60a5fa;
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -191,11 +229,58 @@
   box-shadow:
     0 0 12px rgba(96, 165, 250, 0.8),
     inset 0 0 5px rgba(96, 165, 250, 0.3);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .hud-pause-btn:active {
   transform: translateY(0);
+}
+
+/* Seção Detalhes - Expansível */
+.hud-details {
+  background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+  border: 2px solid #60a5fa;
+  border-radius: 6px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  animation: slideDown 0.2s ease-in-out;
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #d1d5db;
+}
+
+.detail-icon {
+  font-size: 1rem;
+}
+
+.detail-label {
+  font-weight: bold;
+  color: #60a5fa;
+  flex: 1;
+}
+
+.detail-value {
+  font-weight: bold;
+  color: #fbbf24;
 }
 
 /* Arena do Jogo */
