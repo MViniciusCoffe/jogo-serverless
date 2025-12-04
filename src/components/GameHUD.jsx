@@ -14,6 +14,8 @@ export const GameHUD = ({
   currentWave,
   waveTimer,
   waveNumber,
+  selectedOS,
+  installedApps = [],
 }) => {
   // Formata o timer em MM:SS
   const formatTime = (seconds) => {
@@ -41,6 +43,17 @@ export const GameHUD = ({
 
       {/* Barra compacta estilo roguelike */}
       <div className="hud-bar">
+        {/* Sistema Operacional */}
+        {selectedOS && (
+          <>
+            <div className="hud-stat os-badge" title={selectedOS.name}>
+              <span className="stat-icon">{selectedOS.icon}</span>
+              <span className="stat-label os-name">{selectedOS.name}</span>
+            </div>
+            <div className="hud-separator">|</div>
+          </>
+        )}
+
         {/* HP do Player */}
         <div className="hud-stat">
           <span className="stat-icon">❤️</span>
@@ -88,6 +101,17 @@ export const GameHUD = ({
           <span className="stat-icon">💰</span>
           <span className="stat-value gold">{money}</span>
         </div>
+
+        {/* Apps instalados */}
+        {installedApps.length > 0 && (
+          <>
+            <div className="hud-separator">|</div>
+            <div className="hud-stat apps" title={`${installedApps.length} apps instalados`}>
+              <span className="stat-icon">📱</span>
+              <span className="stat-value">{installedApps.length}</span>
+            </div>
+          </>
+        )}
 
         {/* Botão Pausa */}
         {gameActive && (

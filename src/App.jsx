@@ -9,6 +9,9 @@ import { GameHUD } from './components/GameHUD';
 import { GameArena } from './components/GameArena';
 import { GameOverlay } from './components/GameOverlay';
 import { MainMenu } from './components/MainMenu';
+import { DifficultySelect } from './components/DifficultySelect';
+import { OSSelect } from './components/OSSelect';
+import { AppSelect } from './components/AppSelect';
 import './App.css';
 
 const App = () => {
@@ -28,6 +31,13 @@ const App = () => {
   const [defeatedEnemies, setDefeatedEnemies] = useState([]); // Inimigos derrotados para o bestiário
   const [currentWave, setCurrentWave] = useState(null); // Onda atual
   const [waveTimer, setWaveTimer] = useState(60); // Timer da onda
+
+  // Estados do sistema de progressão roguelike
+  const [gamePhase, setGamePhase] = useState('menu'); // 'menu', 'difficulty', 'os', 'playing', 'app-select'
+  const [selectedDifficulty, setSelectedDifficulty] = useState(null);
+  const [selectedOS, setSelectedOS] = useState(null);
+  const [installedApps, setInstalledApps] = useState([]);
+  const [lastCompletedWave, setLastCompletedWave] = useState(0);
 
   // Refs para manipulação DOM
   const playerRef = useRef(null);
@@ -67,8 +77,44 @@ const App = () => {
     container: { width: 0, height: 0 },
   });
 
-  // Handlers
-  const startGame = useCallback(() => {
+  // Handlers de progressão roguelike
+  const handleStartNewRun = useCallback(() => {
+    setGamePhase('difficulty');
+  }, []);
+
+  const handleSelectDifficulty = useCallback((difficulty) => {
+    setSelectedDifficulty(difficulty);
+    setGamePhase('os');
+  }, []);
+
+  const handleSelectOS = useCallback((os) => {
+    setSelectedOS(os);
+    setInstalledApps([]);
+    setLastCompletedWave(0);
+    // Inicia o jogo após selecionar o OS
+    startGameWithProgression();
+  }, []);
+
+  const handleBackToDifficulty = useCallback(() => {
+    setGamePhase('difficulty');
+    setSelectedDifficulty(null);
+  }, []);
+
+  const handleAppSelect = useCallback((app) => {
+    setInstalledApps((prev) => [...prev, app]);
+    // Retoma o jogo após instalar app
+    setGamePhase('playing');
+    setGameActive(true);
+  }, []);
+
+  const handleSkipApp = useCallback(() => {
+    // Retoma o jogo sem instalar app
+    setGamePhase('playing');
+    setGameActive(true);
+  }, []);
+
+  // Função para iniciar o jogo com as configurações de progressão
+  const startGameWithProgression = useCallback(() => {
     setScore(0);
     setLevel(1);
     setCurrentXP(0);
@@ -116,8 +162,20 @@ const App = () => {
     gameState.current.enemies = [];
     gameState.current.moneyDrops = [];
     setEnemies([]);
+    setGamePhase('playing');
     setGameActive(true);
   }, []);
+
+  // Handlers
+  const startGame = useCallback(() => {
+    // Se já tem SO selecionado, inicia direto
+    if (selectedOS) {
+      startGameWithProgression();
+    } else {
+      // Senão, vai para seleção de dificuldade
+      handleStartNewRun();
+    }
+  }, [selectedOS, startGameWithProgression, handleStartNewRun]);
 
   const pauseGame = useCallback(() => {
     setGameActive(false);
@@ -135,6 +193,11 @@ const App = () => {
     setIsPaused(false);
     setIsGameOver(false);
     setGameOverReason(null);
+    setGamePhase('menu');
+    setSelectedDifficulty(null);
+    setSelectedOS(null);
+    setInstalledApps([]);
+    setLastCompletedWave(0);
     loopStartedRef.current = false;
   }, []);
 
@@ -146,10 +209,25 @@ const App = () => {
     });
   }, []);
 
-  // Callback para mudança de onda
-  const handleWaveChange = useCallback((wave) => {
-    setCurrentWave(wave);
-  }, []);
+  // Callback para mudança de onda - mostra seleção de apps
+  const handleWaveChange = useCallback(
+    (wave) => {
+      const newWaveNumber = wave?.id || 1;
+      setCurrentWave(wave);
+
+      // Se mudou de onda e não é a primeira, mostra seleção de apps
+      if (newWaveNumber > lastCompletedWave && lastCompletedWave > 0) {
+        setLastCompletedWave(newWaveNumber - 1);
+        // Pausa o jogo para selecionar app
+        setGameActive(false);
+        setGamePhase('app-select');
+      } else if (lastCompletedWave === 0 && newWaveNumber === 1) {
+        // Primeira wave
+        setLastCompletedWave(1);
+      }
+    },
+    [lastCompletedWave]
+  );
 
   // Custom Hooks
   const { getLevelStats, addXP, getXPDisplay } = useLevelSystem(gameState, setLevel, setCurrentXP);
@@ -231,8 +309,33 @@ const App = () => {
           gameState={gameState}
         />
 
-        {!gameActive && !isPaused && !isGameOver && (
-          <MainMenu onStart={startGame} defeatedEnemies={defeatedEnemies} />
+        {/* Menu Principal */}
+        {gamePhase === 'menu' && !isPaused && !isGameOver && (
+          <MainMenu onStart={handleStartNewRun} defeatedEnemies={defeatedEnemies} />
+        )}
+
+        {/* Seleção de Dificuldade */}
+        {gamePhase === 'difficulty' && <DifficultySelect onSelect={handleSelectDifficulty} />}
+
+        {/* Seleção de Sistema Operacional */}
+        {gamePhase === 'os' && selectedDifficulty && (
+          <OSSelect
+            difficulty={selectedDifficulty}
+            onSelect={handleSelectOS}
+            onBack={handleBackToDifficulty}
+          />
+        )}
+
+        {/* Seleção de Apps (entre waves) */}
+        {gamePhase === 'app-select' && selectedOS && selectedDifficulty && (
+          <AppSelect
+            difficulty={selectedDifficulty}
+            selectedOS={selectedOS}
+            waveNumber={lastCompletedWave}
+            installedApps={installedApps}
+            onSelect={handleAppSelect}
+            onSkip={handleSkipApp}
+          />
         )}
 
         {isGameOver && (
@@ -241,6 +344,9 @@ const App = () => {
             isGameOver={isGameOver}
             score={score}
             reason={gameOverReason}
+            selectedOS={selectedOS}
+            installedApps={installedApps}
+            onBackToMenu={backToMenu}
           />
         )}
 
@@ -272,6 +378,8 @@ const App = () => {
           currentWave={currentWave}
           waveTimer={waveTimer}
           waveNumber={getWaveNumber()}
+          selectedOS={selectedOS}
+          installedApps={installedApps}
         />
       </div>
     </div>
