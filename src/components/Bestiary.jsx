@@ -44,7 +44,7 @@ const MALWARE_DATABASE = [
   {
     id: 6,
     name: 'Worm',
-    emoji: '🪱',
+    emoji: '🌐',
     description: 'Se replica automaticamente pela rede',
     threat: 'Alto',
     damage: 95,
