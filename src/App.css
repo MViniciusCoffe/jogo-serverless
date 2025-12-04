@@ -135,7 +135,7 @@
 }
 
 .stat-value.gold {
-  color: white;
+  color: #fbbf24;
   text-shadow: 0 0 4px rgba(251, 191, 36, 0.5);
 }
 
@@ -254,6 +254,10 @@
   border-radius: 50%;
   z-index: 5;
   animation: glow-pulse 1.5s infinite alternate;
+}
+
+.money-hud {
+  border-radius: 50%;
 }
 
 .money {

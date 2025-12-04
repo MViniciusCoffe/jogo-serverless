@@ -84,7 +84,7 @@ export const GameHUD = ({
         </div>
 
         {/* Money */}
-        <div className="hud-stat money">
+        <div className="hud-stat money-hud">
           <span className="stat-icon">💰</span>
           <span className="stat-value gold">{money}</span>
         </div>
