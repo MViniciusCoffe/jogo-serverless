@@ -51,7 +51,7 @@ const MALWARE_DATABASE = [
   },
 ];
 
-export const Bestiary = ({ onBack }) => {
+export const Bestiary = ({ onBack, defeatedEnemies }) => {
   const [selectedMalware, setSelectedMalware] = useState(null);
 
   return (
@@ -105,19 +105,27 @@ export const Bestiary = ({ onBack }) => {
             {MALWARE_DATABASE.map((malware) => (
               <div
                 key={malware.id}
-                className="malware-card"
-                onClick={() => setSelectedMalware(malware)}
+                className={`malware-card ${defeatedEnemies.includes(malware.id) ? '' : 'locked'}`}
+                onClick={() => defeatedEnemies.includes(malware.id) && setSelectedMalware(malware)}
               >
-                <div className="malware-emoji">{malware.emoji}</div>
+                <div className="malware-emoji">
+                  {defeatedEnemies.includes(malware.id) ? malware.emoji : '❓'}
+                </div>
                 <div className="malware-card-content">
-                  <h4>{malware.name}</h4>
-                  <p>{malware.description}</p>
+                  <h4>{defeatedEnemies.includes(malware.id) ? malware.name : '???'}</h4>
+                  <p>
+                    {defeatedEnemies.includes(malware.id)
+                      ? malware.description
+                      : 'Derrote este inimigo para desbloquear.'}
+                  </p>
                   <span
-                    className={`threat-badge threat-${malware.threat
-                      .toLowerCase()
-                      .replace(/\s/g, '-')}`}
+                    className={`threat-badge ${
+                      defeatedEnemies.includes(malware.id)
+                        ? `threat-${malware.threat.toLowerCase().replace(/\s/g, '-')}`
+                        : 'locked'
+                    }`}
                   >
-                    {malware.threat}
+                    {defeatedEnemies.includes(malware.id) ? malware.threat : '???'}
                   </span>
                 </div>
               </div>

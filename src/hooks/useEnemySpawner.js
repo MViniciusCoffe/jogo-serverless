@@ -41,6 +41,19 @@ export const useEnemySpawner = (gameState, setEnemies) => {
         y = 0;
     }
 
+    // Tipos de malware (IDs correspondem ao MALWARE_DATABASE no Bestiary)
+    const malwareTypes = [
+      { type: 1, name: 'Malware' },
+      { type: 2, name: 'Ransomware' },
+      { type: 3, name: 'Phishing' },
+      { type: 4, name: 'Trojan' },
+      { type: 5, name: 'Spyware' },
+      { type: 6, name: 'Worm' },
+    ];
+
+    // Escolhe um tipo aleatório de malware
+    const randomMalware = malwareTypes[Math.floor(Math.random() * malwareTypes.length)];
+
     // Cria novo inimigo
     enemies.push({
       id: Date.now() + Math.random(),
@@ -50,6 +63,7 @@ export const useEnemySpawner = (gameState, setEnemies) => {
       health: GAME_CONFIG.ENEMY.HEALTH,
       lastDamageTime: 0,
       lastDamageToDatacenter: 0,
+      malwareType: randomMalware.type, // Tipo de malware para desbloquear no bestiário
     });
 
     // Avisa o React para renderizar o novo inimigo

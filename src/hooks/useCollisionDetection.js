@@ -14,7 +14,8 @@ export const useCollisionDetection = (
   setEnemies,
   addXP,
   getLevelStats,
-  onGameOver
+  onGameOver,
+  onEnemyDefeated // Callback para notificar quando um inimigo é derrotado
 ) => {
   /**
    * Verifica colisões do player com inimigos
@@ -105,6 +106,11 @@ export const useCollisionDetection = (
               enemiesToRemove.push(index);
               setScore((s) => s + 10);
 
+              // Notifica que o inimigo foi derrotado (para desbloquear no bestiário)
+              if (onEnemyDefeated && enemy.malwareType) {
+                onEnemyDefeated(enemy.malwareType);
+              }
+
               // Ganha XP ao matar inimigo
               addXP(25);
 
@@ -124,7 +130,7 @@ export const useCollisionDetection = (
 
       return enemiesToRemove;
     },
-    [gameState, setScore, addXP, getLevelStats]
+    [gameState, setScore, addXP, getLevelStats, onEnemyDefeated]
   );
 
   /**

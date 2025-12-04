@@ -21,7 +21,8 @@ export const useGameLoop = (
   setEnemies,
   addXP,
   getLevelStats,
-  onGameOver
+  onGameOver,
+  onEnemyDefeated // Callback para notificar quando um inimigo é derrotado
 ) => {
   const requestRef = useRef();
 
@@ -35,7 +36,8 @@ export const useGameLoop = (
     setEnemies,
     addXP,
     getLevelStats,
-    onGameOver
+    onGameOver,
+    onEnemyDefeated
   );
   const { updatePlayerMovement, updateKnifeMovement, updateAllEnemyMovement } =
     useMovementSystem(gameState);

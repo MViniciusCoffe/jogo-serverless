@@ -3,7 +3,7 @@ import { Bestiary } from './Bestiary';
 import { Settings } from './Settings';
 import { Credits } from './Credits';
 
-export const MainMenu = ({ onStart }) => {
+export const MainMenu = ({ onStart, defeatedEnemies = [] }) => {
   const [currentMenu, setCurrentMenu] = useState('main'); // 'main', 'bestiary', 'settings', 'credits'
 
   const handleStart = () => {
@@ -11,7 +11,7 @@ export const MainMenu = ({ onStart }) => {
   };
 
   if (currentMenu === 'bestiary') {
-    return <Bestiary onBack={() => setCurrentMenu('main')} />;
+    return <Bestiary onBack={() => setCurrentMenu('main')} defeatedEnemies={defeatedEnemies} />;
   }
 
   if (currentMenu === 'settings') {

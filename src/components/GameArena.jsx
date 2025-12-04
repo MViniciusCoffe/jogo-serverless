@@ -95,9 +95,6 @@ export const GameArena = ({
                 position: 'absolute', // Garanta que tem position absolute no CSS ou aqui
                 left: 0,
                 top: 0,
-                // REMOVA O TRANSFORM DAQUI.
-                // Deixe o useGameLoop definir o transform.
-                // Se quiser uma posição inicial para não piscar no canto (0,0), use:
                 transform: `translate(${enemy.x}px, ${enemy.y}px)`,
               }}
             />

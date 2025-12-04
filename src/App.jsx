@@ -25,6 +25,7 @@ const App = () => {
   const [gameOverReason, setGameOverReason] = useState(null); // 'player' ou 'datacenter'
   const [enemies, setEnemies] = useState([]);
   const [moneyDrops, setMoneyDrops] = useState([]);
+  const [defeatedEnemies, setDefeatedEnemies] = useState([]); // Inimigos derrotados para o bestiário
 
   // Refs para manipulação DOM
   const playerRef = useRef(null);
@@ -135,6 +136,14 @@ const App = () => {
     loopStartedRef.current = false;
   }, []);
 
+  // Callback para registrar inimigos derrotados no bestiário
+  const handleEnemyDefeated = useCallback((malwareType) => {
+    setDefeatedEnemies((prev) => {
+      if (prev.includes(malwareType)) return prev;
+      return [...prev, malwareType];
+    });
+  }, []);
+
   // Custom Hooks
   const { getLevelStats, addXP, getXPDisplay } = useLevelSystem(gameState, setLevel, setCurrentXP);
 
@@ -154,7 +163,8 @@ const App = () => {
       setGameActive(false);
       setGameOverReason(reason);
       setIsGameOver(true);
-    }
+    },
+    handleEnemyDefeated
   );
 
   useKeyboardControls(gameState);
@@ -210,7 +220,9 @@ const App = () => {
           gameState={gameState}
         />
 
-        {!gameActive && !isPaused && !isGameOver && <MainMenu onStart={startGame} />}
+        {!gameActive && !isPaused && !isGameOver && (
+          <MainMenu onStart={startGame} defeatedEnemies={defeatedEnemies} />
+        )}
 
         {isGameOver && (
           <GameOverlay
