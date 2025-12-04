@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export const GameHUD = ({
   score,
@@ -8,124 +8,69 @@ export const GameHUD = ({
   maxDatacenterHealth,
   money,
   level,
-  currentXP,
   xpDisplay,
   gameActive,
   onPause,
 }) => {
-  const [showDetails, setShowDetails] = useState(false);
-
   return (
     <div className="game-hud">
-      {/* Seção Principal - Sempre visível */}
-      <div className="hud-main">
-        {/* Coluna Esquerda - VIDA */}
-        <div className="hud-column">
-          <div className="column-label">VIDA</div>
-
-          {/* Integridade do Player */}
-          <div className="hud-card health-card">
-            <div className="card-header">
-              <span className="card-icon">�️</span>
-              <span className="card-title">Player</span>
-            </div>
-            <div className="hud-fill mini">
-              <div
-                className="hud-bar-fill health-fill"
-                style={{ width: `${(health / maxHealth) * 100}%` }}
-              />
-            </div>
-            <div className="card-value">
-              {Math.floor(health)}/{maxHealth}
-            </div>
+      {/* Barra compacta estilo roguelike */}
+      <div className="hud-bar">
+        {/* HP do Player */}
+        <div className="hud-stat">
+          <span className="stat-icon">❤️</span>
+          <div className="stat-bar health-bar">
+            <div
+              className="stat-fill health-fill"
+              style={{ width: `${(health / maxHealth) * 100}%` }}
+            />
           </div>
+          <span className="stat-text">{Math.floor(health)}</span>
+        </div>
 
-          {/* Data Center */}
-          <div className="hud-card datacenter-card">
-            <div className="card-header">
-              <span className="card-icon">�️</span>
-              <span className="card-title">Servidor</span>
-            </div>
-            <div className="hud-fill mini">
-              <div
-                className="hud-bar-fill datacenter-fill"
-                style={{
-                  width: `${(datacenterHealth / maxDatacenterHealth) * 100}%`,
-                }}
-              />
-            </div>
-            <div className="card-value">
-              {Math.floor(datacenterHealth)}/{maxDatacenterHealth}
-            </div>
+        {/* Servidor */}
+        <div className="hud-stat">
+          <span className="stat-icon">🖥️</span>
+          <div className="stat-bar server-bar">
+            <div
+              className="stat-fill server-fill"
+              style={{ width: `${(datacenterHealth / maxDatacenterHealth) * 100}%` }}
+            />
+          </div>
+          <span className="stat-text">{Math.floor(datacenterHealth)}</span>
+        </div>
+
+        {/* Separador */}
+        <div className="hud-separator">|</div>
+
+        {/* Nível */}
+        <div className="hud-stat level">
+          <span className="stat-icon">⭐</span>
+          <span className="stat-label">Lv.{level}</span>
+          <div className="stat-bar xp-bar">
+            <div className="stat-fill xp-fill" style={{ width: `${xpDisplay?.progress || 0}%` }} />
           </div>
         </div>
 
-        {/* Coluna Direita - XP & SCORE */}
-        <div className="hud-column">
-          <div className="column-label">PROGRESSÃO</div>
-
-          {/* Nível e XP */}
-          <div className="hud-card level-card">
-            <div className="card-header">
-              <span className="card-icon">�</span>
-              <span className="card-title">Nível {level}</span>
-            </div>
-            <div className="hud-fill mini">
-              <div
-                className="hud-bar-fill xp-fill"
-                style={{ width: `${xpDisplay?.progress || 0}%` }}
-              />
-            </div>
-            <div className="card-value">{xpDisplay?.progress?.toFixed(0) || 0}%</div>
-          </div>
-
-          {/* Conhecimento */}
-          <div className="hud-card score-card">
-            <div className="card-header">
-              <span className="card-icon">📚</span>
-              <span className="card-title">Conhecimento</span>
-            </div>
-            <div className="card-value large">{score}</div>
-          </div>
+        {/* Score */}
+        <div className="hud-stat score">
+          <span className="stat-icon">📚</span>
+          <span className="stat-value">{score}</span>
         </div>
-      </div>
 
-      {/* Botões Inferiores */}
-      <div className="hud-buttons">
-        {/* Toggle Detalhes */}
-        <button
-          onClick={() => setShowDetails(!showDetails)}
-          className={`hud-toggle-btn ${showDetails ? 'active' : ''}`}
-          title={showDetails ? 'Ocultar detalhes' : 'Mostrar detalhes'}
-        >
-          {showDetails ? '▼' : '▶'} Detalhes
-        </button>
+        {/* Money */}
+        <div className="hud-stat money">
+          <span className="stat-icon">💰</span>
+          <span className="stat-value gold">{money}</span>
+        </div>
 
         {/* Botão Pausa */}
         {gameActive && (
-          <button onClick={onPause} className="hud-pause-btn">
-            ⏸️ PAUSA (P)
+          <button onClick={onPause} className="hud-pause-btn" title="Pausar (P)">
+            ⏸
           </button>
         )}
       </div>
-
-      {/* Seção Detalhes - Expansível */}
-      {showDetails && (
-        <div className="hud-details">
-          <div className="detail-item">
-            <span className="detail-icon">💰</span>
-            <span className="detail-label">Moedas:</span>
-            <span className="detail-value">{money}</span>
-          </div>
-          <div className="detail-item">
-            <span className="detail-icon">⭐</span>
-            <span className="detail-label">XP:</span>
-            <span className="detail-value">
-              {currentXP}/{xpDisplay?.needed || 0}
-            </span>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

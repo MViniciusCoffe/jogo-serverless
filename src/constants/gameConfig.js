@@ -1,42 +1,42 @@
 export const GAME_CONFIG = {
   PLAYER: {
-    SIZE: 30,
-    SPEED: 5,
+    SIZE: 24,
+    SPEED: 4.5,
     INITIAL_X: 'center',
     INITIAL_Y: 'center',
     MAX_HEALTH: 100,
   },
   ENEMY: {
-    SIZE: 20,
-    SPEED: 1.5, // Velocidade que persegue o jogador
+    SIZE: 16,
+    SPEED: 1.3, // Velocidade que persegue o jogador
     SPAWN_MARGIN: 10,
-    SPAWN_INTERVAL: 2000, // Spawn a cada 2 segundos
-    MAX_ENEMIES: 30, // Máximo de inimigos na tela
+    SPAWN_INTERVAL: 1800, // Spawn a cada 1.8 segundos
+    MAX_ENEMIES: 50, // Máximo de inimigos na tela
     HEALTH: 3, // Vida de cada inimigo
     MAX_HEALTH: 3, // Vida máxima (para referência)
     DAMAGE: 95, // Dano que causa ao jogador
     DATACENTER_DAMAGE: 25, // Dano que causa ao data center
   },
   KNIFE: {
-    WIDTH: 8,
-    HEIGHT: 25,
-    ORBIT_RADIUS: 50,
-    ROTATION_SPEED: 0.05,
+    WIDTH: 6,
+    HEIGHT: 20,
+    ORBIT_RADIUS: 40,
+    ROTATION_SPEED: 0.06,
     DAMAGE: 2, // Dano da espada por hit
     DAMAGE_COOLDOWN: 200, // Cooldown em ms entre hits no mesmo inimigo
   },
   DATA_CENTER: {
-    SIZE: 80,
+    SIZE: 60,
     MAX_HEALTH: 500,
     POSITION_X: 'center',
     POSITION_Y: 'center',
     COLLISION_DAMAGE_INTERVAL: 1000, // Dano a cada 1 segundo enquanto em contato
   },
   MONEY: {
-    SIZE: 12,
+    SIZE: 10,
     VALUE: 5, // Valor de cada moeda
-    DROP_CHANCE: 0.1, // 10% de chance de dropar
-    COLLECTION_RADIUS: 60, // Raio de coleta automática
+    DROP_CHANCE: 0.15, // 15% de chance de dropar
+    COLLECTION_RADIUS: 50, // Raio de coleta automática
   },
   LEVEL: {
     BASE_XP_REQUIRED: 100, // XP necessário para level 1

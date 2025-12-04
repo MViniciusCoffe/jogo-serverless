@@ -253,7 +253,6 @@ const App = () => {
           datacenterHealth={datacenterHealth}
           money={money}
           level={level}
-          currentXP={currentXP}
           xpDisplay={getXPDisplay(level, currentXP)}
           maxHealth={GAME_CONFIG.PLAYER.MAX_HEALTH}
           maxDatacenterHealth={GAME_CONFIG.DATA_CENTER.MAX_HEALTH}
