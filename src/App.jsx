@@ -26,6 +26,8 @@ const App = () => {
   const [enemies, setEnemies] = useState([]);
   const [moneyDrops, setMoneyDrops] = useState([]);
   const [defeatedEnemies, setDefeatedEnemies] = useState([]); // Inimigos derrotados para o bestiário
+  const [currentWave, setCurrentWave] = useState(null); // Onda atual
+  const [waveTimer, setWaveTimer] = useState(60); // Timer da onda
 
   // Refs para manipulação DOM
   const playerRef = useRef(null);
@@ -144,10 +146,15 @@ const App = () => {
     });
   }, []);
 
+  // Callback para mudança de onda
+  const handleWaveChange = useCallback((wave) => {
+    setCurrentWave(wave);
+  }, []);
+
   // Custom Hooks
   const { getLevelStats, addXP, getXPDisplay } = useLevelSystem(gameState, setLevel, setCurrentXP);
 
-  const { startLoop, stopLoop } = useGameLoop(
+  const { startLoop, stopLoop, getCurrentWave, getWaveNumber, getWaveTimeRemaining } = useGameLoop(
     gameState,
     playerRef,
     knifeRef,
@@ -164,7 +171,8 @@ const App = () => {
       setGameOverReason(reason);
       setIsGameOver(true);
     },
-    handleEnemyDefeated
+    handleEnemyDefeated,
+    handleWaveChange
   );
 
   useKeyboardControls(gameState);
@@ -177,11 +185,14 @@ const App = () => {
       const interval = setInterval(() => {
         setEnemies([...gameState.current.enemies]);
         setMoneyDrops([...gameState.current.moneyDrops]);
+        // Atualiza informações da onda
+        setCurrentWave(getCurrentWave());
+        setWaveTimer(getWaveTimeRemaining());
       }, 16); // ~60 FPS
 
       return () => clearInterval(interval);
     }
-  }, [gameActive]);
+  }, [gameActive, getCurrentWave, getWaveTimeRemaining]);
 
   // Parar o loop quando o jogo termina
   React.useEffect(() => {
@@ -258,6 +269,9 @@ const App = () => {
           maxDatacenterHealth={GAME_CONFIG.DATA_CENTER.MAX_HEALTH}
           gameActive={gameActive && !isPaused}
           onPause={pauseGame}
+          currentWave={currentWave}
+          waveTimer={waveTimer}
+          waveNumber={getWaveNumber()}
         />
       </div>
     </div>

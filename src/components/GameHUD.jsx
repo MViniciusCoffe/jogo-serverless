@@ -11,9 +11,34 @@ export const GameHUD = ({
   xpDisplay,
   gameActive,
   onPause,
+  currentWave,
+  waveTimer,
+  waveNumber,
 }) => {
+  // Formata o timer em MM:SS
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   return (
     <div className="game-hud">
+      {/* Indicador de Onda - Topo */}
+      {gameActive && currentWave && (
+        <div className="wave-indicator">
+          <div className="wave-info">
+            <span className="wave-number">ONDA {waveNumber}</span>
+            <span className="wave-name">{currentWave.name}</span>
+            <span className="wave-year">{currentWave.year}</span>
+          </div>
+          <div className="wave-timer">
+            <span className="timer-icon">⏱️</span>
+            <span className="timer-value">{formatTime(waveTimer)}</span>
+          </div>
+        </div>
+      )}
+
       {/* Barra compacta estilo roguelike */}
       <div className="hud-bar">
         {/* HP do Player */}

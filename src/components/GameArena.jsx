@@ -51,55 +51,59 @@ export const GameArena = ({
 
       {/* Inimigos */}
       {gameActive &&
-        enemies.map((enemy, index) => (
-          <div key={enemy.id}>
-            {/* Barra de vida (só aparece se vida < máxima) */}
-            {enemy.health < GAME_CONFIG.ENEMY.MAX_HEALTH && (
-              <div
-                className="enemy-health-bar"
-                style={{
-                  position: 'absolute',
-                  left: enemy.x,
-                  top: enemy.y - 8,
-                  width: enemy.size,
-                  height: 4,
-                  backgroundColor: '#222',
-                  border: '1px solid #666',
-                  borderRadius: '2px',
-                }}
-              >
+        enemies.map((enemy, index) => {
+          // Usa maxHealth individual ou padrão
+          const maxHealth = enemy.maxHealth || GAME_CONFIG.ENEMY.MAX_HEALTH;
+          return (
+            <div key={enemy.id}>
+              {/* Barra de vida (só aparece se vida < máxima) */}
+              {enemy.health < maxHealth && (
                 <div
-                  className="enemy-health-fill"
+                  className="enemy-health-bar"
                   style={{
-                    height: '100%',
-                    width: `${(enemy.health / GAME_CONFIG.ENEMY.MAX_HEALTH) * 100}%`,
-                    backgroundColor: '#ef4444',
-                    borderRadius: '1px',
+                    position: 'absolute',
+                    left: enemy.x,
+                    top: enemy.y - 8,
+                    width: enemy.size,
+                    height: 4,
+                    backgroundColor: '#222',
+                    border: '1px solid #666',
+                    borderRadius: '2px',
                   }}
-                />
-              </div>
-            )}
+                >
+                  <div
+                    className="enemy-health-fill"
+                    style={{
+                      height: '100%',
+                      width: `${(enemy.health / maxHealth) * 100}%`,
+                      backgroundColor: '#ef4444',
+                      borderRadius: '1px',
+                    }}
+                  />
+                </div>
+              )}
 
-            {/* Inimigo */}
-            <div
-              ref={(el) => {
-                // Garante que o array de refs não fique com buracos
-                if (enemiesRef.current) {
-                  enemiesRef.current[index] = el;
-                }
-              }}
-              className="entity enemy"
-              style={{
-                width: enemy.size,
-                height: enemy.size,
-                position: 'absolute', // Garanta que tem position absolute no CSS ou aqui
-                left: 0,
-                top: 0,
-                transform: `translate(${enemy.x}px, ${enemy.y}px)`,
-              }}
-            />
-          </div>
-        ))}
+              {/* Inimigo */}
+              <div
+                ref={(el) => {
+                  // Garante que o array de refs não fique com buracos
+                  if (enemiesRef.current) {
+                    enemiesRef.current[index] = el;
+                  }
+                }}
+                className="entity enemy"
+                style={{
+                  width: enemy.size,
+                  height: enemy.size,
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  transform: `translate(${enemy.x}px, ${enemy.y}px)`,
+                }}
+              />
+            </div>
+          );
+        })}
 
       {/* Moedas */}
       {gameActive &&

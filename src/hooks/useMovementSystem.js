@@ -92,9 +92,12 @@ export const useMovementSystem = (gameState) => {
       // Calcula direção
       const direction = getDirectionVector(enemyCenter.x, enemyCenter.y, targetX, targetY);
 
+      // Usa velocidade individual do inimigo (escalada) ou velocidade padrão
+      const enemySpeed = enemy.speed || GAME_CONFIG.ENEMY.SPEED;
+
       // Aplica movimento
-      enemy.x += direction.dx * GAME_CONFIG.ENEMY.SPEED;
-      enemy.y += direction.dy * GAME_CONFIG.ENEMY.SPEED;
+      enemy.x += direction.dx * enemySpeed;
+      enemy.y += direction.dy * enemySpeed;
 
       // Clamp ao container (opcional: deixa sair da tela)
       // enemy.x = Math.max(-enemy.size, Math.min(enemy.x, container.width));

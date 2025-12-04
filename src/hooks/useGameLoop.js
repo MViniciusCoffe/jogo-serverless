@@ -22,12 +22,14 @@ export const useGameLoop = (
   addXP,
   getLevelStats,
   onGameOver,
-  onEnemyDefeated // Callback para notificar quando um inimigo é derrotado
+  onEnemyDefeated,
+  onWaveChange // Callback para notificar mudança de onda
 ) => {
   const requestRef = useRef();
 
   // Inicializa subsistemas
-  const { checkAndSpawn, resetSpawnTime } = useEnemySpawner(gameState, setEnemies);
+  const { checkAndSpawn, resetSpawnTime, getCurrentWave, getWaveNumber, getWaveTimeRemaining } =
+    useEnemySpawner(gameState, setEnemies, onWaveChange);
   const { handleAllCollisions } = useCollisionDetection(
     gameState,
     setScore,
@@ -97,5 +99,11 @@ export const useGameLoop = (
     if (requestRef.current) cancelAnimationFrame(requestRef.current);
   }, []);
 
-  return { startLoop, stopLoop };
+  return {
+    startLoop,
+    stopLoop,
+    getCurrentWave,
+    getWaveNumber,
+    getWaveTimeRemaining,
+  };
 };
